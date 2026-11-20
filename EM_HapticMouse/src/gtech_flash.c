@@ -16,7 +16,7 @@
 #include "usb.h"
 #include "OSC.h"
 #include "eeprom.h"
-#include "gpio.h"
+#include "GPIO.h"
 #include "../inc/WWDT.h"
 //#include "gloab.h"
 #include "IAP_CMD.h"

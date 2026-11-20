@@ -10,7 +10,7 @@
 //#include "../inc/device.h"
 #include "../inc/OSC.h"
 #include "../inc/UART.h"
-#include "type.h"
+#include "Type.h"
 
 #if 1
 //***********************************************************************

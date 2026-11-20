@@ -2,7 +2,7 @@
 //#include "main.h"
 #include "device.h"
 #include "optical_3389.h"
-#include "timer.h"
+#include "Timer.h"
 #include "custom.h"
 #include "GPIO.h"
 #include "pc_communicate.h"

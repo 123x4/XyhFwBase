@@ -23,13 +23,13 @@
 
 #include "LPC11Uxx.h"                        /* LPC11Uxx definitions */
 
-#include "type.h"
+#include "Type.h"
 #include "usb.h"
 #include "usbhw.h"
 #include "usbcore.h"
 #include "usbuser.h"
 #include "device.h"
-#include "uart.h"
+#include "UART.h"
 #include "Timer.h"
 #include "wnDrv_Pmu.h"
 #include "GPIO.h"
@@ -42,7 +42,7 @@
 #include "my_board.h"
 
 #if REMOTE_WAKEUP_ENABLE
-#include "spi.h"
+#include "SPI.h"
 #include "../inc/optical_3389.h"
 //volatile uint32_t SuspendFlag = 0;
 uint8_t suspendFlag = 0;

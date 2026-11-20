@@ -29,7 +29,7 @@
 #include "usbcore.h"
 #include "usbdesc.h"
 #include "usbuser.h"
-#include "uart.h"
+#include "UART.h"
 #include "usbhw.h"
 
 #if (USB_CLASS)
@@ -42,7 +42,7 @@
 #include "vendor.h"
 #endif
 
-#include "spi.h"
+#include "SPI.h"
 #include "device.h"
 
 

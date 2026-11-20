@@ -17,7 +17,7 @@
  *---------------------------------------------------------------------------*/
 #define __HIDUSER_C__
  
-#include "type.h"
+#include "Type.h"
 
 #include "usb.h"
 #include "hid.h"
@@ -25,7 +25,7 @@
 #include "usbcore.h"
 #include "hiduser.h"
 //#include "device.h"
-#include "uart.h"
+#include "UART.h"
 
 uint8_t HID_Protocol;
 uint8_t HID_IdleTime[HID_REPORT_NUM];

@@ -31,7 +31,7 @@
 #include "../inc/OSC.h"
 #include "../inc/I2C.h"
 #include "../inc/led_driver.h"
-#include "type.h"
+#include "Type.h"
 
 #define ZABMASK 0x01 //Nikita 20140224, 0x03
 #define DEBOUNCE_TIME_COUNT 5

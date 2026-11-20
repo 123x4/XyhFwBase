@@ -26,7 +26,7 @@ extern "C" {
 #endif
 
 #include "Type.h"
-#include "Usb.h"
+#include "usb.h"
 #include "usbcfg.h"
 
 #ifdef  __USBHW_C__

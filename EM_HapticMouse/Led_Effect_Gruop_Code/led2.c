@@ -19,9 +19,9 @@
 #include "static.h"
 #include "breathe.h"
 #include "reaction.h"
-#include "production_line_test.h"
+#include "Production_line_test.h"
 #include "pc_communicate.h"
-#include "gpio.h"
+#include "GPIO.h"
 
 ///for FW running
 //LED_Property_Stru LE_G_rV;

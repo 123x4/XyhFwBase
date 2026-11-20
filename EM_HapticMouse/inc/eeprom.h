@@ -2,8 +2,8 @@
 #define  _EPPROM_H_
 
 #include "gloab.h"
-#include "spi.h"
-#include "timer.h"
+#include "SPI.h"
+#include "Timer.h"
 //#include "port.h"
 #include "IAP_CMD.h"
 

@@ -8,7 +8,7 @@
 #include "led_effect_group_code.h"
 #include "led2.h"
 #include "Timer.h"
-#include "gpio.h"
+#include "GPIO.h"
 
 const RGB_STRU productionLine_ledTest[5] = 
 {

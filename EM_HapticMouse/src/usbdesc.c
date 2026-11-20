@@ -19,7 +19,7 @@
  *          V1.20 Changed string descriptor handling
  *          V1.00 Initial Version
  *----------------------------------------------------------------------------*/
-#include "type.h"
+#include "Type.h"
 #include "usb.h"
 #include "hid.h"
 #include "usbcfg.h"

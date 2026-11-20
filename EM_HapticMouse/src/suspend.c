@@ -1,5 +1,5 @@
 //#include "watch_dog_timer.h"
-#include "timer.h"
+#include "Timer.h"
 #include "gloab.h"
 #include "usb.h"
 //#include "gpio_isr.h"
@@ -15,13 +15,13 @@
 //#include "i2c_slave.h"
 //#include "i2c_master.h"
 //#include "spi_hardware.h"
-#include "uart.h"
+#include "UART.h"
 #include "suspend.h"
 #include "GPIO.h"
 #include "wnDrv_Pmu.h"
 #include "usbuser.h"
 #include "pc_communicate.h"
-#include "production_line_test.h"
+#include "Production_line_test.h"
 #include "my_board.h"
 
 UINT8 suspend_UsbActive_timerOut = 5;

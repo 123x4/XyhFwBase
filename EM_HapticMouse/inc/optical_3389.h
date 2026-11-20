@@ -4,7 +4,7 @@
 //#include "platform.h"
 #include "device.h"
 #include "gloab.h"
-#include "spi.h"
+#include "SPI.h"
 
    
 #define OP_3389_Enable	

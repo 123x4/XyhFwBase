@@ -17,7 +17,7 @@
  *---------------------------------------------------------------------------*/
 #define _USBUSER_C_
 
-#include "type.h"
+#include "Type.h"
 
 #include "usb.h"
 #include "usbcfg.h"
@@ -26,7 +26,7 @@
 #include "usbuser.h"
 #include "hiduser.h"
 #include "device.h"
-#include "uart.h"
+#include "UART.h"
 
 #include "led1.h"
 //#include "optical.h"

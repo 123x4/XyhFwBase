@@ -4,7 +4,7 @@
 #include "gloab.h"
 #include "stdbool.h"
 
-#include "../inc/type.h"
+#include "../inc/Type.h"
 //#include "LedControl.h"
 //#include "test.h"
 
