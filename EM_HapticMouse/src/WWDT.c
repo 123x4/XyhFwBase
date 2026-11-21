@@ -75,8 +75,7 @@ void wwdt_config(uint32_t wwdt_time)	// set wwdt_time as 1 means 1ms
 		/* Select watchdog oscillator for WDT clock source */
 		LPC_WWDT->CLKSEL = 0x00000001;
 
-		/* Set watchdog feed time constant to approximately time_out ms
-			Set watchdog warning time to 512 ticks after feed time constant */
+		/* Set watchdog feed time constant to approximately time_out ms */
 		LPC_WWDT->TC = (wdtFreq / 1000) * wwdt_time;
 		LPC_WWDT->WARNINT = 0;
 
