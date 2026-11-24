@@ -272,13 +272,13 @@ const unsigned char sensor_reg_init_array[REG_CNT][2] = {
 #endif
 	{0x17, 0x7C},		//fix
 	{0x18, 0x8E},		//ModeConfig0, led enable, continue conversion mode, smart power-saving mode disabled
-	//ledºãÁ÷Ô´µµÎ»ÉèÖÃ
+	//ledï¿½ï¿½ï¿½ï¿½Ô´ï¿½ï¿½Î»ï¿½ï¿½ï¿½ï¿½
 	//{0x18, 0x0A}, 	//disable led
 	{0x19, 0xFF},		//LED_Current_1
 	{0x1A, 0xFF},		//LED_Current_2
 	{0x1B, 0xFF},		//LED_Current_3
 	{0x1C, 0xFF},		//LED_Current_4
-	//ledºãÁ÷Ô´ÉèÖÃ
+	//ledï¿½ï¿½ï¿½ï¿½Ô´ï¿½ï¿½ï¿½ï¿½
 	{0x1D, 0x88},		//LED_MaxCur1_2
 	{0x1E, 0x88},		//LED_MaxCur3_4
 	{0x1F, 0x07},		//LED_SDO_ Driver, LED_Multiplier = 0, SDO IO Driver current 12mA
@@ -805,7 +805,7 @@ void Hall_CLK_Command_SET(unsigned short high_delay, unsigned short low_delay)
 	
 	NVIC_DisableIRQ(USB_IRQn);
 //	NVIC_DisableIRQ(TIMER_16_0_IRQn);
-	reg = LPC_IOCON->PIO1_15;//	&= ~0x07 ;							//Select GPIO0_10 To CLK0
+	reg = LPC_IOCON->PIO1_15; 				// Select GPIO on PIO1_15 (FUNC=0) to generate the Hall command pulse.
 
 	reg &= ~0x07;
 	reg |= 0x00;
@@ -819,7 +819,7 @@ void Hall_CLK_Command_SET(unsigned short high_delay, unsigned short low_delay)
 
 	//nsAPI_SSP_Delay1us(low_delay);
 	CT16B1_DelayUs(low_delay);
-  reg = LPC_IOCON->PIO1_15;//	&= ~0x07 ;							//Select GPIO0_10 To CLK0
+    reg = LPC_IOCON->PIO1_15; 			// Restore SCK1 on PIO1_15 (FUNC=3) for SSP1 transfers.
 	reg &= ~0x07;
 	reg |= 0x03;
 	LPC_IOCON->PIO1_15 = reg;
@@ -874,14 +874,14 @@ void Hall_osc_calibrate(void)
 {
 	//uint16_t i, j,times=0;
 	uint16_t i, times=0;
-//    uint8_t verify_start = 0;
+	//int8_t verify_start = 0;
 
 	for(i = 0; i < 2; i++)
 	{
 		hall_spi_tx[i * 2 + 1] = 0x55;
 	}
 	
-    while(times < 30)  //Calibrate times is 20
+    while(times < 30)  //Calibrate times is 30
     {
     	HALL_Read_Instru_cnt();
 		
