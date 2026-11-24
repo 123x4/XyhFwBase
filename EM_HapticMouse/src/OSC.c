@@ -29,11 +29,10 @@ void CLKOUT(unsigned long CLK);
 void InitSystemOSC(unsigned int SysOSC , unsigned char SysPSEL , unsigned char SysMSEL , unsigned char AHBDiv)
 {
 	unsigned short int OSCI ;
-
 	//-----
 	LPC_SYSCON->SYSOSCCTRL |= (OSC_Freqrange<<1) ;					//Frequency Range 
 	LPC_SYSCON->PDRUNCFG &= ~(0x1<<5) ;								//Crystal oscillator powered
-	for( OSCI = 0; OSCI < 0x100; OSCI++ ) ;
+	for( OSCI = 0; OSCI < 0x100; OSCI++ ) ; 						
 	//-----
 	LPC_SYSCON->SYSPLLCLKSEL = SysOSC ;								//Select System PLL clock source
 	LPC_SYSCON->SYSPLLCLKUEN = 0x01 ;

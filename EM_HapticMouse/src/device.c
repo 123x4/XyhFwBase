@@ -250,187 +250,38 @@ UINT8 Device_Zoom_OutIn_GetData(UINT8 *mouseBuf,UINT8 *keyboardBuf)
 	return type;
 }
 
-#if 0
-void DPI_event()
-{
-	
-	if(DPI_flag == TRUE ) {
-		DPI_count ++;
-		if(DPI_count >= 3)  DPI_count = 0;
-		
-		switch (DPI_count )
-		{
-			case 0 :		
-				OP_3389_Set_DPI(0x140,0x140);
-//				Optical_Set_DPI(0x77,0x77);
-			break;
-			case 1:
-				OP_3389_Set_DPI(0x77,0x77);
-//				Optical_Set_DPI(0x20,0x20);
-			break;
-			case 2:
-				OP_3389_Set_DPI(0x20,0x20);
-//				Optical_Set_DPI(0x01,0x01);
-			break;
-			case 3:
-
-			default :
-				break;
-		 }
-		}
-		DPI_flag = FALSE ;
-}
-
-
-
-void Mapp_StaticMachineEvent1(void)
-{
-	switch(g_StaticMachineEvent1Type)
-	{
-		case SM_EVENT1_MOUSE_MONITOR:
-		 	if(nsAPI_USB_EP_Status(HID_EP1_IN))
-			;
-				//S_Sensor_MotionCheck();
-			g_StaticMachineEvent1Type = SM_EVENT1_KEYBOARD_MONITOR;
-			
-		break;
-		case SM_EVENT1_KEYBOARD_MONITOR:
-//			nsAPI_GPIO_ButtonEventMointor();
-//			nsAPI_WheelEventMointor();		  
-      nsAPI_Sensor_EventMointor();	  
-			g_StaticMachineEvent1Type = SM_EVENT1_MOUSE_MONITOR;
-		break;
-		case SM_EVENT1_IDLE:
-		default:
-		break;
-	}
-}
-
-
-void nsAPI_SensorEventMointor(void)
-{
-#if REMOTE_WAKEUP_ENABLE
-	if ( rSuspendFlag == 1 ) 
-	{
-		rSuspendFlag = 0;
-		g_Main_Setting.SensorReset = 1;
-		g_Repot_Process.Mouse_Report_In = 0;
-		return;
-  	}
-	#endif
-	#if (SUPPORT_MAC_BOOT_AND_DOS_MODE)
-	if (g_USBCore_Setting.EP0_DosMode)
-	{
-		if(g_Sensor_Data.Changed == 1)
-		{
-			g_Main_Setting.MouseInReport[GIdx1] = 0;//g_Sensor_Data.X1;
-			g_Main_Setting.MouseInReport[GIdx2] = 0;//g_Sensor_Data.Y1;
-			g_Main_Setting.MouseInReport[GIdx3] = 0;
-			g_Main_Setting.MouseInReport[GIdx4] = 0;
-		}
-	}
-	#endif //SUPPORT_MAC_BOOT_AND_DOS_MODE
-	{
-      g_Main_Setting.MouseInReport[GIdx0] = 0x01 ;
-      g_Main_Setting.MouseInReport[GIdx2] = x_value_delta.b.lo ;
-			g_Main_Setting.MouseInReport[GIdx3] = x_value_delta.b.hi;
-			g_Main_Setting.MouseInReport[GIdx4] = y_value_delta.b.lo;
-			g_Main_Setting.MouseInReport[GIdx5] = y_value_delta.b.hi;
-		  
-
-	}
-	if(nsAPI_USB_EP_Status(HID_EP1_IN)  )	//if((g_Main_Setting.EPInOutReq & EP1_IN) == EP1_IN)  //modify 20120808
-	{	
-		if( Optical_Scan() == true ){
-			
-			nsAPI_USB_WriteEP(HID_EP1_IN, &g_Main_Setting.MouseInReport[0], MOUSE_IN_REPORT_SIZE);
-			nsAPI_Main_Clr_EP1Event();
-			g_Main_Setting.EPInOutReq &= ~EP1_IN;
-			g_Repot_Process.Mouse_Report_In = 0;
-			g_Sensor_Data.Changed = 0;
-		}
-	}
-
-}
-#endif
 
 void Device_Manually_Enter_RestoreDefault(void)
 {
 	UINT8 cnt = 10;
-	//BOOL trg = FALSE;
-	//RGB_STRU white_rgb = {255,255,255};
-//	RGB_STRU none_rgb = {0,0,0};
-	//RGB_STRU tmp_rgb;
-
 	while ((Button_GetState() & (RIGHT_BUTTON_REPORT_BIT_MASK | K5_BUTTON_REPORT_BIT_MASK))
 		== (RIGHT_BUTTON_REPORT_BIT_MASK | K5_BUTTON_REPORT_BIT_MASK))
 	{
-		//trg = !trg;
-
-//		if (trg)
-//		{
-//			tmp_rgb = white_rgb;
-//		}else
-//		{
-//			tmp_rgb = none_rgb;
-//		}
-		
-//		LedEffect_Put_StaticColor(tmp_rgb,FALSE,LED_ALL_SEND);
-
-
-//		WATCH_DOG_CLEAR;
 		TimerDelayMsec(200);
 		if (cnt)cnt--;
 		if (!cnt)
 		{
-			///Custom_RestoreAll_Default();
 			Custom_Paramter_Init();
-//			LedEffect_Put_StaticColor(none_rgb,FALSE,LED_ALL_SEND);
 			break;
 		}
 	}
-
-//	LedEffect_Put_StaticColor(none_rgb,FALSE,LED_ALL_SEND);
 }
 
-//void Device_Manually_Enter_Bootloader(void)
-//{
-//	UINT8 cnt = 10;
-
-//	while ((Button_GetState() & (RIGHT_BUTTON_REPORT_BIT_MASK | K4_BUTTON_REPORT_BIT_MASK))
-//		 == (RIGHT_BUTTON_REPORT_BIT_MASK | K4_BUTTON_REPORT_BIT_MASK))
-//	{
-////		WATCH_DOG_CLEAR;
-//		TimerDelayMsec(200);
-//		if (cnt)cnt--;
-//		if (!cnt)
-//		{
-//			Bootloadable_Load();
-//		}
-//	}
-//}
 
 
 
 void Device_Init(void)
 {
-//	TimerDelayMsec(100);
-//	nsAPI_System_Init();
 	wwdt_config(0xFFFF);
 	InitSystemOSC( MAIN_SEL , PSEL , MSEL , SYS_AHB_DIV_VAL) ;
 	InitGPIO() ;
 	Ele_Init();
-//	TimerDelayMsec(100);
 	#if (ENABLE_UART)
 		InitUART(9600) ;
 		xprintf("\r\n Uart Init OK0",0);
 	#endif
-//	Chip_IAP_ReinvokeISP();
 	InitUSBOSC( USB_SEL , USB_PSEL , USB_MSEL , USB_DIV_VAL) ;
-	//-----MCU Periphert Init-----
-//	InitI2C();
-	
-  Param_Init();
+  	Param_Init();
 	MyDebug_Init();
 	
   #if (defined(IRPT_V4))
@@ -1008,7 +859,7 @@ uint8_t buttons_scan()
 	if(DrvGPIORead(0, 12) ==0)  // LB
 		retval |= 0x01;
 	
-	if(DrvGPIORead(1, 27) ==0)  //RB    //  ÏÈÓÃ P1_20 ´úÌæ P1_27   if(DrvGPIORead(1, 27) ==0)  //RB 
+	if(DrvGPIORead(1, 27) ==0)  //RB    //  ï¿½ï¿½ï¿½ï¿½ P1_20 ï¿½ï¿½ï¿½ï¿½ P1_27   if(DrvGPIORead(1, 27) ==0)  //RB 
 		retval |= 0x02;
 	
 	if(DrvGPIORead(0, 17) ==0)  //MB

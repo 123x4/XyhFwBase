@@ -1,0 +1,73 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1500" height="920" viewBox="0 0 1500 920">
+  <defs>
+    <marker id="arrow2" markerWidth="10" markerHeight="10" refX="9" refY="3" orient="auto" markerUnits="strokeWidth">
+      <path d="M0,0 L0,6 L9,3 z" fill="#64748B"/>
+    </marker>
+    <style>
+      .title { font: 700 34px 'Noto Sans CJK SC','Microsoft YaHei',sans-serif; fill: #0F172A; }
+      .subtitle { font: 20px 'Noto Sans CJK SC','Microsoft YaHei',sans-serif; fill: #475569; }
+      .cardtitle { font: 700 24px 'Noto Sans CJK SC','Microsoft YaHei',sans-serif; fill: #0F172A; }
+      .body { font: 19px 'Noto Sans CJK SC','Microsoft YaHei',sans-serif; fill: #334155; }
+      .code { font: 18px 'Noto Sans Mono CJK SC','Consolas',monospace; fill: #0F172A; }
+      .flow { font: 700 18px 'Noto Sans CJK SC','Microsoft YaHei',sans-serif; fill: #1E40AF; }
+      .small { font: 15px 'Noto Sans CJK SC','Microsoft YaHei',sans-serif; fill: #64748B; }
+      .recall { font: 700 22px 'Noto Sans CJK SC','Microsoft YaHei',sans-serif; fill: #0F172A; }
+    </style>
+  </defs>
+  <rect width="1500" height="920" fill="#F8FAFC"/>
+  <text x="40" y="58" class="title">InitSystemOSC：关键机制回忆卡</text>
+  <text x="40" y="95" class="subtitle">看图回答：选择怎样生效？48 MHz 怎么算出来？哪些等待可能停住？最后到底打开了什么？</text>
+
+  <rect x="40" y="135" width="690" height="310" rx="16" fill="#EFF6FF" stroke="#60A5FA" stroke-width="2"/>
+  <text x="65" y="178" class="cardtitle">A. SEL + UEN：先选择，再更新</text>
+  <rect x="65" y="220" width="130" height="62" rx="10" fill="#FFFFFF" stroke="#93C5FD"/>
+  <rect x="230" y="220" width="130" height="62" rx="10" fill="#FFFFFF" stroke="#93C5FD"/>
+  <rect x="395" y="220" width="130" height="62" rx="10" fill="#FFFFFF" stroke="#93C5FD"/>
+  <rect x="560" y="220" width="130" height="62" rx="10" fill="#DBEAFE" stroke="#3B82F6"/>
+  <text x="91" y="258" class="flow">写 SEL</text>
+  <text x="251" y="258" class="flow">UEN = 0</text>
+  <text x="416" y="258" class="flow">UEN = 1</text>
+  <text x="586" y="258" class="flow">读回 1</text>
+  <line x1="199" y1="251" x2="222" y2="251" stroke="#64748B" stroke-width="3" marker-end="url(#arrow2)"/>
+  <line x1="364" y1="251" x2="387" y2="251" stroke="#64748B" stroke-width="3" marker-end="url(#arrow2)"/>
+  <line x1="529" y1="251" x2="552" y2="251" stroke="#64748B" stroke-width="3" marker-end="url(#arrow2)"/>
+  <text x="65" y="326" class="code">SYSPLLCLKSEL + SYSPLLCLKUEN</text>
+  <text x="65" y="358" class="code">MAINCLKSEL + MAINCLKUEN</text>
+  <text x="65" y="405" class="body">只写 SEL，不会立即更新实际使用的时钟源。</text>
+
+  <rect x="770" y="135" width="690" height="310" rx="16" fill="#F5F3FF" stroke="#A78BFA" stroke-width="2"/>
+  <text x="795" y="178" class="cardtitle">B. PLL：寄存器值不是直接倍频数</text>
+  <text x="795" y="224" class="code">SYSPLLCTRL = (PSEL &lt;&lt; 5) | MSEL</text>
+  <text x="795" y="256" class="code">= (1 &lt;&lt; 5) | 3 = 0x23</text>
+  <rect x="805" y="290" width="170" height="66" rx="12" fill="#FFFFFF" stroke="#C4B5FD"/>
+  <rect x="1045" y="290" width="170" height="66" rx="12" fill="#FFFFFF" stroke="#C4B5FD"/>
+  <rect x="1280" y="290" width="150" height="66" rx="12" fill="#EDE9FE" stroke="#8B5CF6"/>
+  <text x="833" y="331" class="flow">12 MHz</text>
+  <text x="1083" y="331" class="flow">M = 4</text>
+  <text x="1308" y="331" class="flow">48 MHz</text>
+  <line x1="981" y1="323" x2="1035" y2="323" stroke="#64748B" stroke-width="3" marker-end="url(#arrow2)"/>
+  <line x1="1221" y1="323" x2="1270" y2="323" stroke="#64748B" stroke-width="3" marker-end="url(#arrow2)"/>
+  <text x="795" y="397" class="body">MSEL + 1 = 4；PSEL = 1 → P = 2；FCCO = 192 MHz</text>
+  <text x="795" y="428" class="small">Fclkout = M × Fclkin = FCCO ÷ (2 × P)</text>
+
+  <rect x="40" y="480" width="690" height="305" rx="16" fill="#FFF7ED" stroke="#FB923C" stroke-width="2"/>
+  <text x="65" y="523" class="cardtitle">C. 两种等待，含义不同</text>
+  <text x="65" y="570" class="code">for (... OSCI &lt; 0x100 ...)</text>
+  <text x="65" y="605" class="body">振荡器上电后的短延迟，不是精确毫秒延时。</text>
+  <line x1="65" y1="632" x2="700" y2="632" stroke="#FED7AA"/>
+  <text x="65" y="674" class="code">while (!(SYSPLLSTAT &amp; 1));</text>
+  <text x="65" y="709" class="body">等待 PLL 锁定；输入、供电或参数异常时，</text>
+  <text x="65" y="741" class="body">程序可能一直停在这里，因为代码没有超时退出。</text>
+
+  <rect x="770" y="480" width="690" height="305" rx="16" fill="#ECFDF5" stroke="#34D399" stroke-width="2"/>
+  <text x="795" y="523" class="cardtitle">D. 最终结果与职责边界</text>
+  <text x="795" y="570" class="code">SYSAHBCLKDIV = 1</text>
+  <text x="795" y="604" class="body">主时钟 48 MHz ÷ 1 → 系统时钟 48 MHz</text>
+  <text x="795" y="650" class="code">SYSAHBCLKCTRL[16] = 1</text>
+  <text x="795" y="684" class="body">只打开 IOCON 时钟，不等于打开所有外设。</text>
+  <text x="795" y="735" class="body">USB 时钟由 InitUSBOSC 另行初始化。</text>
+
+  <rect x="40" y="820" width="1420" height="62" rx="14" fill="#E2E8F0"/>
+  <text x="70" y="860" class="recall">备源 → 选源并更新 → 配 PLL → 上电等锁 → 切主时钟并更新 → 分频与门控</text>
+  <text x="40" y="908" class="small">源码：src/OSC.c:29-56；PLL 示例：UM10462 表 52（12 MHz 输入、48 MHz 输出、M=4、P=2、FCCO=192 MHz）。</text>
+</svg>

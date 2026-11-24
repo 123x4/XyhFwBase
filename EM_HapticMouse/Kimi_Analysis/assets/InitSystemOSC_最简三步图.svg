@@ -1,0 +1,53 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1400" height="720" viewBox="0 0 1400 720">
+  <defs>
+    <marker id="arrow-simple" markerWidth="12" markerHeight="12" refX="10" refY="4" orient="auto" markerUnits="strokeWidth">
+      <path d="M0,0 L0,8 L10,4 z" fill="#94A3B8"/>
+    </marker>
+    <style>
+      .title { font: 700 40px 'Noto Sans SC','Noto Sans CJK SC',sans-serif; fill: #0F172A; }
+      .subtitle { font: 25px 'Noto Sans SC','Noto Sans CJK SC',sans-serif; fill: #475569; }
+      .step { font: 700 27px 'Noto Sans SC','Noto Sans CJK SC',sans-serif; fill: #0F172A; }
+      .big { font: 700 44px 'Noto Sans SC','Noto Sans CJK SC',sans-serif; fill: #0F172A; }
+      .body { font: 23px 'Noto Sans SC','Noto Sans CJK SC',sans-serif; fill: #475569; }
+      .small { font: 18px 'Noto Sans SC','Noto Sans CJK SC',sans-serif; fill: #64748B; }
+      .remember { font: 700 29px 'Noto Sans SC','Noto Sans CJK SC',sans-serif; fill: #1E3A8A; }
+    </style>
+  </defs>
+  <rect width="1400" height="720" fill="#FAFCFF"/>
+  <text x="700" y="70" text-anchor="middle" class="title">InitSystemOSC 只做一件事</text>
+  <text x="700" y="120" text-anchor="middle" class="subtitle">用 12 MHz 晶振，做出 48 MHz 时钟，再让芯片使用</text>
+
+  <rect x="70" y="190" width="350" height="340" rx="28" fill="#EFF6FF" stroke="#93C5FD" stroke-width="2"/>
+  <circle cx="120" cy="240" r="27" fill="#3B82F6"/>
+  <text x="120" y="250" text-anchor="middle" font-family="sans-serif" font-size="28" font-weight="700" fill="#FFFFFF">1</text>
+  <text x="165" y="250" class="step">准备好</text>
+  <text x="245" y="340" text-anchor="middle" class="big">12 MHz</text>
+  <text x="245" y="395" text-anchor="middle" class="body">启动振荡器</text>
+  <text x="245" y="435" text-anchor="middle" class="body">选它作为 PLL 输入</text>
+  <text x="245" y="500" text-anchor="middle" class="small">src/OSC.c:34-42</text>
+
+  <rect x="525" y="190" width="350" height="340" rx="28" fill="#F5F3FF" stroke="#C4B5FD" stroke-width="2"/>
+  <circle cx="575" cy="240" r="27" fill="#8B5CF6"/>
+  <text x="575" y="250" text-anchor="middle" font-family="sans-serif" font-size="28" font-weight="700" fill="#FFFFFF">2</text>
+  <text x="620" y="250" class="step">变快，等稳定</text>
+  <text x="700" y="340" text-anchor="middle" class="big">12 × 4 = 48</text>
+  <text x="700" y="395" text-anchor="middle" class="body">PLL 负责倍频</text>
+  <text x="700" y="435" text-anchor="middle" class="body">LOCK：等它稳定</text>
+  <text x="700" y="500" text-anchor="middle" class="small">src/OSC.c:44-46</text>
+
+  <rect x="980" y="190" width="350" height="340" rx="28" fill="#ECFDF5" stroke="#86EFAC" stroke-width="2"/>
+  <circle cx="1030" cy="240" r="27" fill="#22C55E"/>
+  <text x="1030" y="250" text-anchor="middle" font-family="sans-serif" font-size="28" font-weight="700" fill="#FFFFFF">3</text>
+  <text x="1075" y="250" class="step">换过去</text>
+  <text x="1155" y="340" text-anchor="middle" class="big">48 MHz</text>
+  <text x="1155" y="395" text-anchor="middle" class="body">稳定以后</text>
+  <text x="1155" y="435" text-anchor="middle" class="body">芯片才切换主时钟</text>
+  <text x="1155" y="500" text-anchor="middle" class="small">src/OSC.c:48-52</text>
+
+  <line x1="435" y1="355" x2="505" y2="355" stroke="#94A3B8" stroke-width="5" marker-end="url(#arrow-simple)"/>
+  <line x1="890" y1="355" x2="960" y2="355" stroke="#94A3B8" stroke-width="5" marker-end="url(#arrow-simple)"/>
+
+  <rect x="190" y="575" width="1020" height="70" rx="35" fill="#DBEAFE"/>
+  <text x="700" y="621" text-anchor="middle" class="remember">准备 → 倍频并等稳定 → 切换</text>
+  <text x="700" y="685" text-anchor="middle" class="small">最后两件小事：÷ 1，仍是 48 MHz；打开 IOCON 时钟。（src/OSC.c:54-55）</text>
+</svg>
