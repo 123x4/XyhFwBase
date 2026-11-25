@@ -1,0 +1,39 @@
+--- a/app/button.c
++++ b/app/button.c
+@@ -806,11 +806,26 @@
+ 
+ #if defined(GT_LINA_T1A_H6_PWM)
+ /* Short H6 commands need finer steps than the microsecond delay.
+- * Keep the high pulse free of maskable interrupts. The low wait has a minimum.
++ * The timer stops deliberately BELOW the target (H6_PULSE_TRIM_COUNTS), and
++ * H6_COMP() adds the rest as literal NOPs at 20.83 ns each. The poll
++ * detection quantises the timer part to roughly one loop period, but the
++ * NOP tail is exact, so one calibration lands the pulse on nominal.
++ * Maskable interrupts stay disabled while the pulse is high; the low wait
++ * only has a minimum, so it keeps the coarse delay.
+  */
+ #define H6_PULSE_COUNTS_PER_US  48
+ #define H6_PULSE_MAX_COUNTS     65500
+-#define H6_PULSE_TRIM_COUNTS    (-33)
++#define H6_PULSE_TRIM_COUNTS    (-41)   /* 0.854 us below nominal, see H6_COMP */
++
++/* Fine compensation after the timer deadline. Keep this a literal sequence:
++ * one __NOP() is one 48 MHz cycle, so 18 NOPs are 375 ns. To calibrate, add
++ * or remove whole NOPs on the H6_COMP() line and re-measure. */
++#define H6_COMP_1()    __NOP()
++#define H6_COMP_2()    H6_COMP_1(); H6_COMP_1()
++#define H6_COMP_4()    H6_COMP_2(); H6_COMP_2()
++#define H6_COMP_8()    H6_COMP_4(); H6_COMP_4()
++#define H6_COMP_16()   H6_COMP_8(); H6_COMP_8()
++#define H6_COMP()      H6_COMP_16(); H6_COMP_2()
+ 
+ static void Hall_H6_PulseUs(unsigned short highUs, unsigned short lowUs)
+ {
+@@ -853,6 +868,7 @@
+     while ((uint16_t)(LPC_CT16B1->TC - start) < counts)
+     {
+     }
++    H6_COMP();
+     LPC_GPIO->CLR[1] = sckMask;
+     LPC_CT16B1->TCR = 0U;
+ 
