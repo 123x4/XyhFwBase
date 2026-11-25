@@ -23,8 +23,8 @@
 //#define V4_HALL_HPTIC_V4
 //#define V4_HALL_HPTIC_V4_G2_0923
 //#define GT_LINA_T1A_H5
-#define GT_LINA_T1A_H5_PWM
-//#define GT_LINA_T1A_H6_PWM
+// #define GT_LINA_T1A_H5_PWM
+#define GT_LINA_T1A_H6_PWM
 // #define HAPTIC_V4_PWM
 
 
