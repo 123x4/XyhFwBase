@@ -990,6 +990,7 @@ static void Hall_H6_Diagnostic(void)
     const unsigned int minimumAttempts = 16U;
     uint8_t tx[4] = {0};
     uint8_t rx[4];
+    uint8_t reg35[3][2];
     unsigned int word0;
     unsigned int word1;
     unsigned int attempts = 0;
@@ -1013,6 +1014,23 @@ static void Hall_H6_Diagnostic(void)
         }
     } while ((attempts < minimumAttempts || !passed) && attempts < 128U);
 
+    if (passed)
+    {
+        unsigned int readIndex;
+
+        /* GTRY164 Fig. 7: two 16-bit read requests with the write flag clear. */
+        tx[0] = 0x35U;
+        tx[2] = 0x35U;
+        for (readIndex = 0; readIndex < sizeof(reg35) / sizeof(reg35[0]); ++readIndex)
+        {
+            SSP_Send_Receive(tx, rx, sizeof(tx));
+            Hall_CLK_Command_SET(37U, 4U);
+            SSP_Send_Receive(tx, rx, sizeof(tx));
+            reg35[readIndex][0] = rx[1];
+            reg35[readIndex][1] = rx[3];
+        }
+    }
+
     /* Keep USB logs running here until normal H6 initialization is added. */
     lastLog = MyTick_GetTickMs() - 1000U;
     while (1)
@@ -1025,6 +1043,14 @@ static void Hall_H6_Diagnostic(void)
             PC_Communicate();
             if (now - lastLog >= 1000U)
             {
+                /* Emit register results before H6_CAL for the host's --once mode. */
+                if (passed)
+                {
+                    InfoLog("H6_REG35 R=0x%02X L=0x%02X R2=0x%02X L2=0x%02X R3=0x%02X L3=0x%02X",
+                            (unsigned int)reg35[0][0], (unsigned int)reg35[0][1],
+                            (unsigned int)reg35[1][0], (unsigned int)reg35[1][1],
+                            (unsigned int)reg35[2][0], (unsigned int)reg35[2][1]);
+                }
                 InfoLog("H6_CAL %s n=%u w0=0x%04X w1=0x%04X",
                         passed ? "PASS" : "FAIL", attempts, word0, word1);
                 lastLog = now;
