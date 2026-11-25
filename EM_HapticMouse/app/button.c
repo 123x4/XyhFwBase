@@ -805,16 +805,16 @@ BOOL Button_Scan(void)
 
 
 #if defined(GT_LINA_T1A_H6_PWM)
-/* Extra delay appended to the CT16B1_DelayUs() high time. One __NOP() is one
- * 48 MHz cycle (20.83 ns), so 36 NOPs add 750 ns: passing 126 us then lands on
- * about 128.00 us. Keep this a literal sequence and re-trim by whole NOPs. */
+/* Extra delay appended to the CT16B1_DelayUs() high time. At 48 MHz,
+ * 31 NOPs add 646 ns. With a 126 us delay, 36 NOPs measured 128.10 us.
+ * Keep this a literal sequence and re-trim by whole NOPs. */
 #define H6_PULSE_TAIL_1()    __NOP()
 #define H6_PULSE_TAIL_2()    H6_PULSE_TAIL_1(); H6_PULSE_TAIL_1()
 #define H6_PULSE_TAIL_4()    H6_PULSE_TAIL_2(); H6_PULSE_TAIL_2()
 #define H6_PULSE_TAIL_8()    H6_PULSE_TAIL_4(); H6_PULSE_TAIL_4()
 #define H6_PULSE_TAIL_16()   H6_PULSE_TAIL_8(); H6_PULSE_TAIL_8()
 #define H6_PULSE_TAIL_32()   H6_PULSE_TAIL_16(); H6_PULSE_TAIL_16()
-#define H6_PULSE_TAIL()      H6_PULSE_TAIL_32(); H6_PULSE_TAIL_4()
+#define H6_PULSE_TAIL()      H6_PULSE_TAIL_16(); H6_PULSE_TAIL_8(); H6_PULSE_TAIL_4(); H6_PULSE_TAIL_2(); H6_PULSE_TAIL_1()
 #endif
 
 void Hall_CLK_Command_SET(unsigned short high_delay, unsigned short low_delay)
