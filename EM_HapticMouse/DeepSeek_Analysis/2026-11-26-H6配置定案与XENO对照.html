@@ -1,0 +1,310 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>H6 配置定案（32 项 · 与 XENO 同项数）</title>
+<style>
+  :root{
+    --bg:#0e1116;--panel:#161b22;--panel2:#1d2430;--line:#2a3340;
+    --tx:#e7eef6;--dim:#9aa7b4;--dim2:#6d7b8a;
+    --red:#ff6b6b;--amber:#ffb347;--green:#4ade80;--blue:#60a5fa;
+    --purple:#c084fc;--pink:#f472b6;--gray:#8b98a5;--cyan:#22d3ee;
+  }
+  *{box-sizing:border-box}
+  body{margin:0;background:var(--bg);color:var(--tx);
+    font:15px/1.68 -apple-system,"Segoe UI","PingFang SC","Microsoft YaHei",sans-serif}
+  header{padding:34px 26px 22px;border-bottom:1px solid var(--line);
+    background:radial-gradient(900px 300px at 12% -12%,rgba(34,211,238,.16),transparent 60%),
+               radial-gradient(700px 260px at 88% -18%,rgba(192,132,252,.14),transparent 60%)}
+  h1{margin:0 0 6px;font-size:27px}
+  .sub{color:var(--dim);max-width:960px}
+  .stats{display:flex;gap:12px;flex-wrap:wrap;margin-top:18px}
+  .stat{background:var(--panel);border:1px solid var(--line);border-radius:12px;padding:10px 15px;min-width:118px}
+  .stat b{display:block;font-size:22px;line-height:1.25}
+  .stat span{color:var(--dim);font-size:12px}
+  main{max-width:1220px;margin:0 auto;padding:20px 20px 90px}
+  h2{font-size:19.5px;margin:36px 0 6px;padding-left:11px;border-left:3px solid var(--cyan)}
+  .lead{color:var(--dim);margin:2px 0 14px;padding-left:14px;font-size:14px}
+  table{width:100%;border-collapse:collapse;font-size:13.5px;margin-top:8px}
+  th,td{border-bottom:1px solid var(--line);padding:8px 9px;text-align:left;vertical-align:top}
+  th{color:var(--dim);font-weight:600;font-size:12.5px;background:var(--bg)}
+  td code{color:var(--cyan);white-space:nowrap}
+  .note{background:#121820;border:1px solid var(--line);border-left:3px solid var(--amber);
+    border-radius:10px;padding:12px 15px;margin:14px 0;font-size:14px;color:#cfd9e3}
+  .note.crit{border-left-color:var(--red)}
+  .note.ok{border-left-color:var(--green)}
+  .bar{position:sticky;top:0;z-index:9;background:rgba(14,17,22,.96);backdrop-filter:blur(8px);
+    border-bottom:1px solid var(--line);padding:10px 20px;margin:0 -20px 8px;
+    display:flex;gap:9px;flex-wrap:wrap;align-items:center}
+  .chip{border:1px solid var(--line);background:var(--panel);color:var(--dim);
+    border-radius:999px;padding:6px 12px;font-size:13px;cursor:pointer;user-select:none}
+  .chip.on{background:#0d2a33;border-color:var(--cyan);color:var(--cyan)}
+  .tag{font-size:11.5px;border-radius:999px;padding:2px 8px;border:1px solid;white-space:nowrap}
+  .t-same{color:var(--green);border-color:#1f5136;background:#0f2a1c}
+  .t-app{color:var(--purple);border-color:#4a2f5e;background:#241630}
+  .t-meas{color:var(--amber);border-color:#5c4420;background:#2a2113}
+  .t-undoc{color:var(--pink);border-color:#5e2a45;background:#2a1220}
+  .dec{display:grid;grid-template-columns:repeat(auto-fill,minmax(330px,1fr));gap:14px}
+  .dbox{background:var(--panel);border:1px solid var(--line);border-radius:14px;padding:15px}
+  .dbox h3{margin:0 0 6px;font-size:15px}
+  .dbox .q{color:var(--dim);font-size:13px;margin-bottom:8px}
+  .dbox .rec{color:var(--green);font-size:13.5px;margin-bottom:6px}
+  .dbox ul{margin:6px 0 0 18px;padding:0;font-size:13px;color:#c4ced9}
+  .grp{background:var(--panel);border:1px solid var(--line);border-radius:14px;padding:14px 16px;margin:12px 0}
+  .grp h3{margin:0 0 8px;font-size:15px}
+  .grp h3 span{color:var(--dim);font-weight:400;font-size:12.5px;margin-left:8px}
+  footer{color:var(--dim2);font-size:12.5px;border-top:1px solid var(--line);margin-top:46px;padding-top:16px}
+  .hint{color:var(--dim2);font-size:12.5px;margin-left:auto}
+  @media (max-width:640px){.stat{flex:1 1 44%}}
+</style>
+</head>
+<body>
+<header>
+  <h1>H6 配置定案 <span style="color:var(--dim);font-weight:400;font-size:16px">· 32 项，与 XENO 同项数</span></h1>
+  <div class="sub">XENO 写 32 项，我们就写 32 项：默认值相等的也显式写，保证每次上电状态一致、不依赖“上电默认”。
+  其中 22 项与 XENO 完全同值（含 8 项手册未公开寄存器），10 项按 Lina 的应用改，增益组待实测定档。</div>
+  <div class="stats">
+    <div class="stat"><b>32</b><span>要写（= XENO 项数）</span></div>
+    <div class="stat" style="color:var(--green)"><b style="color:var(--green)">22</b><span>与 XENO 同值</span></div>
+    <div class="stat"><b style="color:var(--purple)">10</b><span>按应用调整</span></div>
+    <div class="stat"><b style="color:var(--pink)">8</b><span>手册未公开（跟随 XENO）</span></div>
+  </div>
+</header>
+
+<main>
+  <h2>一、为什么改成全写</h2>
+  <div class="lead">之前的方案是“只写必需的 9 项、其余靠上电默认”。改成全写，理由有四条。</div>
+  <div class="notes">
+    <div class="note">
+      <b>1. 不依赖上电默认。</b>默认值是硅片的“出厂态”，不同批次、不同复位路径未必一致；
+      显式写一遍，上电状态就完全由固件决定，可复现、可回滚。
+    </div>
+    <div class="note">
+      <b>2. 与 XENO 同项数 = 同一条已验证路径。</b>XENO 是在真实产品上跑通的配置；项数一致，
+      就排除了“漏写某个寄存器导致行为不同”的可能，出了问题也更容易和 XENO 对比。
+    </div>
+    <div class="note">
+      <b>3. 读回验证覆盖完整。</b>32 项都能读回（我们已实测 WR 寄存器可读回影子值），
+      一旦某项没写进去，立刻能从读回值发现，而不是等采样异常再倒推。
+    </div>
+    <div class="note crit">
+      <b>4. 代价要说清：</b>8 个手册未公开的寄存器（0x13/0x15/0x16/0x18/0x1C/0x1E/0x20/0x25）
+      也跟着 XENO 写。它们没有位定义，写错不知道后果——所以第一轮一旦出现异常，
+      <b>优先怀疑这 8 个</b>，回退方法就是恢复成上电默认（或整组去掉重测）。
+    </div>
+  </div>
+
+  <h2>二、32 项写入清单（按执行顺序分组）</h2>
+  <div class="lead">同组内顺序可换，组间按“固定值 → 模拟前端 → 节拍 → 按键/基线 → LED → 方向 → 最后开转换”走。</div>
+
+  <div class="grp">
+    <h3>第 1 组 · 固定值<span>0x0C、0x26–0x28、0x2F</span></h3>
+    <table>
+      <tr><th style="width:8%">#</th><th style="width:10%">地址</th><th style="width:10%">值</th><th style="width:26%">名称</th><th>说明</th></tr>
+      <tr><td>1</td><td><code>0x0C</code></td><td><code>0x83</code></td><td>Test_Reg0</td><td>唯一“默认 0xAA 是错的”寄存器，必须改</td></tr>
+      <tr><td>2</td><td><code>0x26</code></td><td><code>0x0A</code></td><td>Test_Reg1</td><td>默认已相等，显式写</td></tr>
+      <tr><td>3</td><td><code>0x27</code></td><td><code>0x05</code></td><td>Test_Reg2</td><td>默认已相等，显式写</td></tr>
+      <tr><td>4</td><td><code>0x28</code></td><td><code>0x04</code></td><td>Test_Reg3</td><td>默认已相等，显式写</td></tr>
+      <tr><td>5</td><td><code>0x2F</code></td><td><code>0x14</code></td><td>Test_Reg4</td><td>默认已相等；XENO 自动填充基线时会临时写 0x02，我们不用</td></tr>
+    </table>
+  </div>
+
+  <div class="grp">
+    <h3>第 2 组 · 模拟前端与未公开 trim<span>0x09、0x0B、0x29、0x2A、0x13、0x15、0x16、0x18、0x1C、0x1E、0x20、0x25</span></h3>
+    <table>
+      <tr><th style="width:8%">#</th><th style="width:10%">地址</th><th style="width:10%">值</th><th style="width:26%">名称</th><th>说明</th></tr>
+      <tr><td>6</td><td><code>0x09</code></td><td><code>0x20</code></td><td>LED_IMAX</td><td>bit5=1 让 0x0B 的 0x8 表示 24×；LED 电流 0（XENO 用 0x25）</td></tr>
+      <tr><td>7</td><td><code>0x0B</code></td><td><code>0x88</code></td><td>Gain_Config0</td><td>24× / 22.8×；首轮保守档，实测跨度不足换 0x99</td></tr>
+      <tr><td>8</td><td><code>0x29</code></td><td><code>0x60</code></td><td>Gain_Config1</td><td>24× 的联动 trim，必须同批写</td></tr>
+      <tr><td>9</td><td><code>0x2A</code></td><td><code>0x28</code></td><td>Gain_Config2</td><td>24× 的联动 trim，必须同批写</td></tr>
+      <tr><td>10</td><td><code>0x13</code></td><td><code>0x7F</code></td><td>（未公开）</td><td>跟随 XENO；无位定义</td></tr>
+      <tr><td>11</td><td><code>0x15</code></td><td><code>0x05</code></td><td>（未公开）</td><td>跟随 XENO；无位定义</td></tr>
+      <tr><td>12</td><td><code>0x16</code></td><td><code>0x02</code></td><td>（未公开）</td><td>跟随 XENO；注意它不是 H5 的 PGA</td></tr>
+      <tr><td>13</td><td><code>0x18</code></td><td><code>0x03</code></td><td>（未公开）</td><td>跟随 XENO；注意它不是 H5 的模式寄存器</td></tr>
+      <tr><td>14</td><td><code>0x1C</code></td><td><code>0xFF</code></td><td>（未公开）</td><td>跟随 XENO；无位定义</td></tr>
+      <tr><td>15</td><td><code>0x1E</code></td><td><code>0x80</code></td><td>（未公开）</td><td>跟随 XENO；无位定义</td></tr>
+      <tr><td>16</td><td><code>0x20</code></td><td><code>0x80</code></td><td>（未公开）</td><td>跟随 XENO；无位定义</td></tr>
+      <tr><td>17</td><td><code>0x25</code></td><td><code>0x29</code></td><td>（未公开）</td><td>跟随 XENO；无位定义</td></tr>
+    </table>
+  </div>
+
+  <div class="grp">
+    <h3>第 3 组 · 采样节拍<span>0x0F、0x10</span></h3>
+    <table>
+      <tr><th style="width:8%">#</th><th style="width:10%">地址</th><th style="width:10%">值</th><th style="width:26%">名称</th><th>说明</th></tr>
+      <tr><td>18</td><td><code>0x0F</code></td><td><code>0x1F</code></td><td>Sample_Interval_L</td><td>低 8 位 31（XENO 用 0x07 = 28 µs）</td></tr>
+      <tr><td>19</td><td><code>0x10</code></td><td><code>0x20</code></td><td>Sample_Interval_H</td><td>高 4 位 0，[7:4] 固定 2 → 31×4 = 124 µs</td></tr>
+    </table>
+  </div>
+
+  <div class="grp">
+    <h3>第 4 组 · 按键、中断参数与基线<span>0x1B、0x2B、0x2C、0x2D、0x2E、0x30、0x31、0x32</span></h3>
+    <table>
+      <tr><th style="width:8%">#</th><th style="width:10%">地址</th><th style="width:10%">值</th><th style="width:26%">名称</th><th>说明</th></tr>
+      <tr><td>20</td><td><code>0x1B</code></td><td><code>0x01</code></td><td>SCK_Idle_Time</td><td>跟随 XENO；中断模式才生效，我们不用但显式写</td></tr>
+      <tr><td>21</td><td><code>0x2B</code></td><td><code>0x03</code></td><td>Press_Key_Threshold_L</td><td>跟随 XENO；中断模式阈值，我们不用</td></tr>
+      <tr><td>22</td><td><code>0x2C</code></td><td><code>0x40</code></td><td>Press_Key_Threshold_H</td><td>跟随 XENO；注意 bit6 与 0x32 的 bit6 是两套设置</td></tr>
+      <tr><td>23</td><td><code>0x2D</code></td><td><code>0x00</code></td><td>Baseline_Initial_L</td><td>8192 的低字节；baseline 关闭时不参与，但显式写</td></tr>
+      <tr><td>24</td><td><code>0x2E</code></td><td><code>0x20</code></td><td>Baseline_Initial_H</td><td>高 6 位 = 0x20 → 8192（14 位中点）</td></tr>
+      <tr><td>25</td><td><code>0x30</code></td><td><code>0x20</code></td><td>Baseline_Positive_Deviation</td><td>±512 LSB 窗口（0x20×16）</td></tr>
+      <tr><td>26</td><td><code>0x31</code></td><td><code>0x20</code></td><td>Baseline_Negative_Deviation</td><td>同上</td></tr>
+      <tr><td>27</td><td><code>0x32</code></td><td><code>0x01</code></td><td>Key_Type</td><td>按下原始值变小（XENO 用 0x41，方向相反）；SPS 关</td></tr>
+    </table>
+  </div>
+
+  <div class="grp">
+    <h3>第 5 组 · LED 电流<span>0x05–0x08</span></h3>
+    <table>
+      <tr><th style="width:8%">#</th><th style="width:10%">地址</th><th style="width:10%">值</th><th style="width:26%">名称</th><th>说明</th></tr>
+      <tr><td>28</td><td><code>0x05</code></td><td><code>0x00</code></td><td>LED_Current_1</td><td>Lina 霍尔 LED 未接；XENO 写白平衡值</td></tr>
+      <tr><td>29</td><td><code>0x06</code></td><td><code>0x00</code></td><td>LED_Current_2</td><td>同上</td></tr>
+      <tr><td>30</td><td><code>0x07</code></td><td><code>0x00</code></td><td>LED_Current_3</td><td>同上；曾用它做过写路径验证</td></tr>
+      <tr><td>31</td><td><code>0x08</code></td><td><code>0x00</code></td><td>LED_Current_4</td><td>同上</td></tr>
+    </table>
+  </div>
+
+  <div class="grp">
+    <h3>第 6 组 · 最后合闸<span>0x33</span></h3>
+    <table>
+      <tr><th style="width:8%">#</th><th style="width:10%">地址</th><th style="width:10%">值</th><th style="width:26%">名称</th><th>说明</th></tr>
+      <tr><td>32</td><td><code>0x33</code></td><td><code>0x80</code></td><td>Work_Mode</td><td>连续转换开、命令触发、非中断、硬件 baseline 关；<b>写完等 50 µs 再读数据</b></td></tr>
+    </table>
+  </div>
+
+  <h2>三、三方分析怎么合，最终怎么定</h2>
+  <table>
+    <tr><th style="width:16%">议题</th><th style="width:20%">Codex</th><th style="width:22%">Kimi</th><th style="width:16%">DeepSeek（我）</th><th>最终</th></tr>
+    <tr><td>写入项数</td><td>9（必需项）</td><td>9 起，默认可省</td><td>9（必需项）</td>
+      <td><b>32 项，与 XENO 同项数</b>（你定的：默认也写）</td></tr>
+    <tr><td>8 个未公开寄存器</td><td>不写</td><td>不写</td><td>不写</td>
+      <td><b>跟随 XENO 写</b>（你定的）；第一轮异常时优先怀疑这 8 个</td></tr>
+    <tr><td>增益起点</td><td>0x88 先测，0x99 备选</td><td>0x99（匹配 H5 1152×）</td><td>0x88 先测</td>
+      <td><b>0x88 首轮</b>：低增益必得可用数据，高增益可能饱和没数据；按跨度定终值</td></tr>
+    <tr><td>按下方向 0x32</td><td>0x01</td><td>0x41（与其自身位定义矛盾）</td><td>0x01</td>
+      <td><b>0x01</b>：H5 做 16383−raw，按下原始值变小 → bit6=0</td></tr>
+    <tr><td>硬件 baseline</td><td>0x80 关</td><td>0x80 关</td><td>0x80 关</td><td>一致：关</td></tr>
+    <tr><td>采样间隔</td><td>124 µs（28 对照）</td><td>124 µs</td><td>124 µs</td><td>一致：0x1F/0x20</td></tr>
+    <tr><td>0x33 后等待</td><td>50 µs</td><td>50 µs</td><td>原先漏了</td><td><b>采纳 50 µs</b>（手册 0x33 条目明确要求）</td></tr>
+  </table>
+  <div class="note crit">
+    Kimi 的 0x32 推荐值 0x41 与它自己的位定义矛盾（0x41 的 bit6=1 表示按下变大）。按 H5 行为应为 0x01，
+    以实测方向复核为准。
+  </div>
+
+  <h2>四、与 XENO 逐项对照（32 项）</h2>
+  <div class="lead">XENO 写过的每一项都在这里，逐项给出我们的值、归类和差异理由。</div>
+  <div class="bar">
+    <span class="chip on" data-f="all">全部</span>
+    <span class="chip" data-f="same">同值</span>
+    <span class="chip" data-f="app">应用差异</span>
+    <span class="chip" data-f="meas">待实测</span>
+    <span class="chip" data-f="undoc">未公开跟随</span>
+    <span class="hint">显示 <b id="cnt">0</b> 项</span>
+  </div>
+  <table id="cmp">
+    <thead><tr><th style="width:8%">地址</th><th style="width:18%">名称</th><th style="width:17%">XENO 值</th>
+      <th style="width:15%">我们的值</th><th style="width:10%">归类</th><th>差异理由</th></tr></thead>
+    <tbody></tbody>
+  </table>
+
+  <h2>五、10 项差异逐条说清</h2>
+  <div class="dec">
+    <div class="dbox"><h3>① 采样间隔 28 → 124 µs</h3><div class="q">0x0F：0x07 → 0x1F</div>
+      <div class="rec">应用差异</div><ul><li>XENO 键盘要 32 kHz 上报；Lina 1 kHz 轮询，124 µs 已 8 倍富余</li><li>间隔越短功耗越高</li></ul></div>
+    <div class="dbox"><h3>② 按下方向 0x41 → 0x01</h3><div class="q">0x32 bit6：1 → 0</div>
+      <div class="rec">应用差异，待实测复核</div><ul><li>磁铁方向相反</li><li>H5 固件 16383−raw 说明按下原始值变小</li></ul></div>
+    <div class="dbox"><h3>③ 硬件 baseline 0x84 → 0x80</h3><div class="q">0x33 bit2：1 → 0</div>
+      <div class="rec">最关键的一处</div><ul><li>XENO 产测注释：开 baseline 输出 0–8000 相对值，关着是 8000–16000 原始值</li><li>Lina 上层吃原始值，开了等于推翻软件基线/RT</li></ul></div>
+    <div class="dbox"><h3>④ LED 电流：白平衡值 → 0</h3><div class="q">0x05–0x08</div>
+      <div class="rec">应用差异</div><ul><li>Lina 霍尔 LED 引脚未接</li><li>显式写 0，不依赖默认</li></ul></div>
+    <div class="dbox"><h3>⑤ LED Imax：0x25 → 0x20</h3><div class="q">0x09 低 4 位：5 → 0</div>
+      <div class="rec">应用差异</div><ul><li>Imax 2.4 mA → 0；bit5 两边都是 1，LNA 选择不受影响</li></ul></div>
+    <div class="dbox"><h3>⑥ 基线初值：产线值 → 8192</h3><div class="q">0x2D/0x2E</div>
+      <div class="rec">应用差异</div><ul><li>XENO 用每颗键的产线 flash 值或自动填充</li><li>我们 baseline 关闭，写中点 8192 即可，保证寄存器状态确定</li></ul></div>
+  </div>
+  <div class="note">
+    其余 22 项（含 8 个未公开寄存器、0x1B/0x2B/0x2C 中断参数、固定值组）数值与 XENO 完全一致，
+    都是显式写入，不再依赖上电默认。
+  </div>
+
+  <h2>六、上板验证清单</h2>
+  <table>
+    <tr><th style="width:24%">验证项</th><th>判据</th></tr>
+    <tr><td>32 项全部写入</td><td>每写一项记录“地址/值/读回值”，32 项都应有回读；写失败立即重试一次</td></tr>
+    <tr><td>写路径</td><td>0x0C 读回 0x83（不是 0xAA）；0x32 读回 0x01（不是 0x41）</td></tr>
+    <tr><td>增益组一致</td><td>0x09=0x20、0x0B=0x88、0x29=0x60、0x2A=0x28 四项同时正确</td></tr>
+    <tr><td>采样节拍</td><td>0x0F=0x1F、0x10=0x20；波形上连续转换间隔约 124 µs</td></tr>
+    <tr><td>转换已开</td><td>0x33 读回 0x80；写后等 50 µs 再取第一帧</td></tr>
+    <tr><td>方向与跨度</td><td>分别按左、右：原始值随按下单调变化；记录松开/按到底，算跨度</td></tr>
+    <tr><td>增益定档</td><td>跨度 &lt; 3000 → 0x0B=0x99、0x29=0xA0、0x2A=0x40；接近 16383/0x3FFF → 降 16×</td></tr>
+    <tr><td>异常回退</td><td>若采样异常且排除接线：先整组去掉 8 个未公开寄存器重测，再查增益组</td></tr>
+  </table>
+
+  <footer>
+    依据：GTRY164 V1.9 §7–§9（寄存器表 p13–17）；XENO <code>h6_hal.c</code>（pwm_init #L1169、
+    type_mode #L1219、reg_set_mode #L1308、offset_cali_reg_recovery #L1280、get_lna_trim_regs #L945）、
+    <code>mfg_mode.c</code> baseline 注释（#L232–250）；三方分析：Codex / Kimi / DeepSeek 的
+    <code>2026-11-25-H6配置讲解.*</code>。
+    <br>生成：2026-11-26 · DeepSeek · 32 项全写版本，待上板验证
+  </footer>
+</main>
+
+<script>
+const ROWS = [
+ {a:"0x05",n:"LED_Current_1",x:"白平衡值",o:"0x00",t:"app",r:"LED 未接；显式写 0。"},
+ {a:"0x06",n:"LED_Current_2",x:"白平衡值",o:"0x00",t:"app",r:"同上。"},
+ {a:"0x07",n:"LED_Current_3",x:"白平衡值",o:"0x00",t:"app",r:"同上；曾用于写路径验证。"},
+ {a:"0x08",n:"LED_Current_4",x:"白平衡值",o:"0x00",t:"app",r:"同上。"},
+ {a:"0x09",n:"LED_IMAX",x:"0x25",o:"0x20",t:"app",r:"bit5 同为 1；Imax 2.4 mA → 0。"},
+ {a:"0x0B",n:"Gain_Config0",x:"0x88",o:"0x88（首轮）",t:"meas",r:"XENO 默认档；跨度不足换 0x99。"},
+ {a:"0x0C",n:"Test_Reg0",x:"0x83",o:"0x83",t:"same",r:"手册固定值，必须一致。"},
+ {a:"0x0F",n:"Sample_Interval_L",x:"0x07",o:"0x1F",t:"app",r:"28 µs → 124 µs，对齐 H5。"},
+ {a:"0x10",n:"Sample_Interval_H",x:"0x20",o:"0x20",t:"same",r:"同值，显式写。"},
+ {a:"0x13",n:"（未公开）",x:"0x7F",o:"0x7F",t:"undoc",r:"跟随 XENO；无位定义。"},
+ {a:"0x15",n:"（未公开）",x:"0x05",o:"0x05",t:"undoc",r:"跟随 XENO。"},
+ {a:"0x16",n:"（未公开）",x:"0x02",o:"0x02",t:"undoc",r:"跟随 XENO；不是 H5 的 PGA。"},
+ {a:"0x18",n:"（未公开）",x:"0x03",o:"0x03",t:"undoc",r:"跟随 XENO；不是 H5 的模式寄存器。"},
+ {a:"0x1B",n:"SCK_Idle_Time",x:"0x01",o:"0x01",t:"same",r:"同值；中断模式才生效。"},
+ {a:"0x1C",n:"（未公开）",x:"0xFF",o:"0xFF",t:"undoc",r:"跟随 XENO。"},
+ {a:"0x1E",n:"（未公开）",x:"0x80",o:"0x80",t:"undoc",r:"跟随 XENO。"},
+ {a:"0x20",n:"（未公开）",x:"0x80",o:"0x80",t:"undoc",r:"跟随 XENO。"},
+ {a:"0x25",n:"（未公开）",x:"0x29",o:"0x29",t:"undoc",r:"跟随 XENO。"},
+ {a:"0x26",n:"Test_Reg1",x:"0x0A",o:"0x0A",t:"same",r:"同值，显式写。"},
+ {a:"0x27",n:"Test_Reg2",x:"0x05",o:"0x05",t:"same",r:"同值，显式写。"},
+ {a:"0x28",n:"Test_Reg3",x:"0x04",o:"0x04",t:"same",r:"同值，显式写。"},
+ {a:"0x29",n:"Gain_Config1",x:"0x60",o:"0x60（首轮）",t:"meas",r:"24× 联动；换 48× 改 0xA0。"},
+ {a:"0x2A",n:"Gain_Config2",x:"0x28",o:"0x28（首轮）",t:"meas",r:"24× 联动；换 48× 改 0x40。"},
+ {a:"0x2B",n:"Press_Key_Threshold_L",x:"0x03",o:"0x03",t:"same",r:"同值；中断模式专用。"},
+ {a:"0x2C",n:"Press_Key_Threshold_H",x:"0x40",o:"0x40",t:"same",r:"同值；bit6 与 0x32 的 bit6 是两套。"},
+ {a:"0x2D",n:"Baseline_Initial_L",x:"产线 flash 值",o:"0x00",t:"app",r:"取 8192 低字节；baseline 关闭，仅保证状态确定。"},
+ {a:"0x2E",n:"Baseline_Initial_H",x:"产线 flash 值",o:"0x20",t:"app",r:"高 6 位 0x20 → 8192。"},
+ {a:"0x2F",n:"Test_Reg4",x:"0x14（自动填充时先 0x02）",o:"0x14",t:"same",r:"同值 0x14；我们不做自动填充。"},
+ {a:"0x30",n:"Baseline_Positive_Deviation",x:"0x20",o:"0x20",t:"same",r:"同值；baseline 关闭不参与。"},
+ {a:"0x31",n:"Baseline_Negative_Deviation",x:"0x20",o:"0x20",t:"same",r:"同值。"},
+ {a:"0x32",n:"Key_Type",x:"0x41",o:"0x01",t:"app",r:"按下原始值变小；XENO 磁铁方向相反。"},
+ {a:"0x33",n:"Work_Mode",x:"0x84（最终）",o:"0x80",t:"app",r:"保持硬件 baseline 关闭；写完等 50 µs。"}
+];
+const T={same:["同值","t-same"],app:["应用差异","t-app"],meas:["待实测","t-meas"],undoc:["未公开跟随","t-undoc"]};
+let filter="all";
+const tb=document.querySelector("#cmp tbody"),cnt=document.getElementById("cnt");
+function render(){
+  tb.innerHTML="";let n=0;
+  for(const r of ROWS){
+    if(filter!=="all"&&r.t!==filter)continue;n++;
+    const [label,cls]=T[r.t];
+    const tr=document.createElement("tr");
+    tr.innerHTML=`<td><code>${r.a}</code></td><td>${r.n}</td><td>${r.x}</td>
+      <td>${r.o}</td><td><span class="tag ${cls}">${label}</span></td><td>${r.r}</td>`;
+    tb.appendChild(tr);
+  }
+  cnt.textContent=n;
+}
+document.querySelectorAll(".chip").forEach(c=>{
+  c.onclick=()=>{document.querySelectorAll(".chip").forEach(x=>x.classList.remove("on"));
+    c.classList.add("on");filter=c.dataset.f;render();};
+});
+render();
+</script>
+</body>
+</html>

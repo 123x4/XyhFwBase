@@ -1,0 +1,530 @@
+<!doctype html>
+<html lang="zh-CN"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1">
+<title>GTRY164 配置讲解 · Lina</title><style>
+:root{color-scheme:dark;--bg:#10141c;--panel:#171e29;--raised:#202b39;--text:#eef2f7;--muted:#b9c4d2;--accent:#78e4d3;--line:#354457;--warn:#ffd197;--mono:ui-monospace,"Cascadia Mono",monospace}
+*{box-sizing:border-box}html{scroll-padding-top:1rem}body{margin:0;background:var(--bg);color:var(--text);font:16px/1.65 system-ui,"Microsoft YaHei","PingFang SC",sans-serif}
+a{color:var(--accent);text-underline-offset:.2em}button,input{font:inherit}a:focus-visible,button:focus-visible,input:focus-visible,summary:focus-visible{outline:2px solid var(--accent);outline-offset:3px}
+header{background:linear-gradient(150deg,#1e3841,#17222f 65%);border-bottom:1px solid var(--line)}.wrap{width:min(1200px,100% - 2rem);margin:auto}.hero{padding:3.25rem 0 2.5rem}.chip{font:600 1.1rem var(--mono);color:var(--accent)}
+h1,h2,h3,p{margin:0}h1{font-size:clamp(2.35rem,6.5vw,4.75rem);letter-spacing:-.045em;line-height:1.1;margin:.55rem 0 .85rem}h2{font-size:clamp(1.45rem,3vw,2rem);line-height:1.2;margin-bottom:.65rem}h3{font-size:1.05rem;line-height:1.4}
+.lead,.muted,.legend,.meta,footer,.hint{color:var(--muted)}.lead{max-width:78ch;font-size:1.07rem}
+nav{display:flex;flex-wrap:wrap;gap:.35rem 1.25rem;margin-top:1.4rem}nav a{font-weight:600}
+main>section{margin:2.4rem 0}section>p+p{margin-top:.7rem}.panels{display:grid;grid-template-columns:repeat(auto-fit,minmax(min(190px,100%),1fr));gap:.7rem;margin:.9rem 0 1rem}
+.panel,.callout,.decision{padding:1rem;background:var(--panel);border:1px solid var(--line);border-radius:.7rem}.panel h3{color:var(--accent);margin-bottom:.3rem}.panel p{font-size:.93rem;color:var(--muted)}
+.callout{border-inline-start:4px solid var(--warn)}.callout p+p{margin-top:.55rem}.callout strong{color:var(--warn)}
+.tools{padding:1rem;background:var(--panel);border:1px solid var(--line);border-radius:.7rem;margin:1rem 0}.search-row{display:flex;flex-wrap:wrap;gap:.55rem;align-items:center}.search-row label{font-weight:700}.search-row input{flex:1;min-width:min(100%,18rem);background:var(--bg);color:var(--text);border:1px solid var(--line);border-radius:.45rem;padding:.5rem .65rem}
+.filters{display:flex;flex-wrap:wrap;gap:.4rem;margin:.6rem 0}.filters button,.tools .action{background:var(--raised);color:var(--text);border:1px solid var(--line);border-radius:.4rem;padding:.32rem .7rem;cursor:pointer}button:hover{border-color:var(--accent)}.filters button[aria-pressed=true]{color:#08231e;background:var(--accent);border-color:var(--accent);font-weight:700}
+.group h3{margin:1rem 0 .6rem}.cards{display:grid;grid-template-columns:repeat(auto-fit,minmax(min(100%,340px),1fr));align-items:start;gap:.65rem}.card{background:var(--panel);border:1px solid var(--line);border-radius:.65rem;scroll-margin-top:1rem}.card[open],.card:target{border-color:var(--accent)}summary{list-style:none;padding:.85rem 2rem .85rem .9rem;position:relative;cursor:pointer}summary::-webkit-details-marker{display:none}summary::after{position:absolute;right:.8rem;top:.76rem;content:"+";color:var(--accent);font-size:1.2rem}.card[open]>summary::after{content:"−"}.card-top,.meta{display:flex;align-items:center;flex-wrap:wrap;gap:.3rem .55rem}.card-top strong{overflow-wrap:anywhere}.addr,code,.value{font-family:var(--mono)}.addr,.value{color:var(--accent);font-weight:700}.meta{margin:.27rem 0 .36rem;font-size:.83rem}.metaphor{display:block;color:var(--text);font-size:.92rem}.badge{padding:.03rem .4rem;border-radius:.24rem;background:var(--raised);border:1px solid var(--line)}.b-write{color:var(--accent)}.b-trial{color:var(--warn)}.b-hidden{color:#e0c6ff}.card-body{border-top:1px solid var(--line);padding:.75rem .9rem;font-size:.92rem;overflow-wrap:anywhere}dl,dd{margin:0}dt{font-weight:700;margin:.7rem 0 .2rem}dt:first-child{margin:0}dd{color:var(--muted)}.refs span{display:block}.refs span+span{margin-top:.3rem}.page{white-space:nowrap}.sr{position:absolute;height:1px;width:1px;overflow:hidden;clip-path:inset(50%)}
+.scroll{overflow-x:auto;margin:.8rem 0;border:1px solid var(--line);border-radius:.65rem}table{width:100%;min-width:560px;border-collapse:collapse;background:var(--panel);font-size:.92rem}th,td{text-align:left;vertical-align:top;padding:.65rem .8rem;border-bottom:1px solid var(--line)}thead th{background:var(--raised);color:var(--text)}tbody th{font-weight:650}td{color:var(--muted)}tbody tr:last-child>*{border-bottom:0}
+.timeline{list-style:none;counter-reset:steps;margin:1rem 0;padding:0}.timeline li{counter-increment:steps;display:grid;grid-template-columns:2rem minmax(0,1fr);gap:.65rem;padding-bottom:.6rem;position:relative}.timeline li::before{content:counter(steps);display:grid;place-items:center;width:2rem;height:2rem;border:1px solid var(--line);border-radius:50%;color:var(--accent);background:var(--panel);font-family:var(--mono);z-index:1}.timeline li:not(:last-child)::after{content:"";height:100%;left:1rem;top:.8rem;position:absolute;border-left:1px solid var(--line)}.timeline li>div{background:var(--panel);border:1px solid var(--line);border-radius:.6rem;padding:.45rem .75rem}.timeline li:last-child>div{border-color:var(--accent)}.timeline p{color:var(--muted);font-size:.94rem}.timeline a{font-family:var(--mono)}
+.decisions{display:grid;grid-template-columns:repeat(auto-fit,minmax(min(100%,355px),1fr));gap:.75rem;margin:.8rem 0}.decision p{font-size:.95rem;margin-top:.5rem}.decision p:nth-child(3){color:var(--muted)}.decision strong{color:var(--accent)}.decision p:last-child strong{color:var(--warn)}
+.check{width:1rem;height:1rem;accent-color:var(--accent)}.errors{padding-inline-start:1.4rem}.errors li{padding-block:.25rem}footer{border-top:1px solid var(--line);padding:1rem 0 2.2rem;font-size:.9rem}footer ul{padding-inline-start:1.3rem}footer a{overflow-wrap:anywhere}[hidden]{display:none!important}
+@media(max-width:520px){.hero{padding:1.9rem 0 1.5rem}.search-row label{flex-basis:100%}.search-row input{min-width:0}.wrap{width:calc(100% - 1.1rem)}}
+@media print{:root{color-scheme:light;--bg:white;--panel:white;--raised:#eee;--text:#111;--muted:#222;--accent:#143c30;--line:#aaa;--warn:#723900}header{background:none}.tools,nav{display:none}.card{break-inside:avoid}}
+</style></head>
+<body>
+<header><div class="wrap hero">
+<p class="chip">GTRY164 V1.9</p><h1>Lina 的 H6 配置讲解</h1>
+<p class="lead">从磁铁距离到 MCU 读数。用芯片手册、Lina 的 H5 实现和 XENO 的 H6 设置，判断每个值为什么要改、怎样验收。</p>
+<nav aria-label="章节"><a href="#registers">寄存器</a><a href="#mapping">H5 对照</a><a href="#sequence">写入顺序</a><a href="#choices">四个决策</a><a href="#readback">读回验证</a><a href="#errors">常见错误</a></nav>
+</div></header>
+<main class="wrap">
+<section aria-labelledby="intro"><h2 id="intro">沿着信号走一遍</h2>
+<p>磁铁移动改变 Hall 信号，模拟前端先放大，ADC 再按节拍把信号变成数字。离开 ADC 后，方向与阈值帮助判断按键，基线提供松开参考，最后 MCU 走 SDO 读回所需的数据。</p>
+<div class="panels"><article class="panel"><h3>模拟前端</h3><p>磁铁远近改变 Hall 信号。LNA 和 PGA 像显微镜倍率，放大过头会在行程一端贴边。</p></article><article class="panel"><h3>采样节拍</h3><p>ADC 像定时拍照。124 µs 或 28 µs 指芯片内部取样间隔，MCU 读帧节奏另算。</p></article><article class="panel"><h3>按键判定</h3><p>判断码值往哪边走、何时跨门槛。Lina 首版把手感阈值和 Rapid Trigger 留在 MCU。</p></article><article class="panel"><h3>基线</h3><p>把松开时的读数当作参考零点。H6 硬件基线只跟踪 TOP，Lina 另有 MCU 顶底基线。</p></article><article class="panel"><h3>输出杂项</h3><p>SDO 把数值送回 MCU。霍尔的 LED/PWM 脚在 Lina 图纸上为 NC。</p></article></div>
+<div class="callout"><p><strong>默认值陷阱</strong>　<a href="#reg-0C">0x0C</a> 上电为 <code>0xAA</code>，手册要求工作时写 <code>0x83</code>。</p>
+<p>0x26、0x27、0x28、0x2F、0x34 上电已符合固定值。干净上电且此后未改写时，写回同值与保持默认的寄存器状态相同。0x09、0x10 的默认值也符合首测目标，本方案明确写入以便按顺序审查。0x35 默认 0x27，台架双芯片已读回 0x27。</p></div>
+</section>
+<section id="registers" aria-labelledby="reg-heading"><h2 id="reg-heading">寄存器逐项讲解</h2>
+<p class="legend">GTRY164 V1.9 p13–17 与任务给出的公开地址段合计 29 项。这里覆盖全部 29 项和指定的 8 个未公开地址。“我们要写”包括首测选值待实测的条目。展开卡片可看位义、两套旧项目对照和错误现象。</p>
+<div class="tools"><div class="search-row"><label for="register-search">搜索</label><input id="register-search" type="search" placeholder="例如 0x0B、SPS、LNA、基线" autocomplete="off"><button class="action" type="button" id="clear">清空</button><button class="action" type="button" id="expand">展开／收起结果</button></div>
+<div class="filters" role="group" aria-label="按配置状态筛选"><button type="button" data-filter="all" aria-pressed="true">全部</button><button type="button" data-filter="write" aria-pressed="false">我们要写</button><button type="button" data-filter="trial" aria-pressed="false">待实测</button><button type="button" data-filter="default" aria-pressed="false">默认即可</button><button type="button" data-filter="na" aria-pressed="false">不适用</button><button type="button" data-filter="hidden" aria-pressed="false">未公开</button><button type="button" data-filter="ro" aria-pressed="false">只读</button></div>
+<p class="hint" id="result-count" role="status" aria-live="polite">共 37 项</p></div>
+<div class="group"><h3>公开寄存器 · 29 项</h3><div class="cards"><details class="card" id="reg-05" data-status="na" data-write="false">
+  <summary><span class="card-top"><span class="addr">0x05</span><strong>LED_Current_1</strong></span>
+  <span class="meta"><span class="badge b-na">不适用</span><span>默认 <code>0x00</code></span><span>输出杂项</span></span>
+  <span class="metaphor">四盏灯的第一只独立亮度旋钮。</span></summary>
+  <div class="card-body">
+    <dl><dt>位定义</dt><dd>[7:0] k1；ILED1 = Imax × m × k1 / 255。 <a class="page" href="../Materials/GTRY164%20Magnetic%20Keyboard%20Sensor%20and%20LED%20Driver_V1.9_20261008%20%28Gtech%29.pdf#page=13">手册 p13</a></dd>
+    <dt>Lina 怎么配</dt><dd>保持 0x00。Lina 霍尔芯片的 PWM 输出标 NC，触觉 PWM 是另一条 MCU 电路。</dd>
+    <dt>H5 对照</dt><dd>LED1 电流在 0x19，Lina H5 写 0xFF；H5 分母 256，Imax 按通道设。</dd>
+    <dt>XENO 源码</dt><dd class="refs"><span>普通槽写 0x00 <a href="../Materials/GT_SS_XENO_APP_20260916/src/h6/h6_hal.c#L1173">h6/h6_hal.c:1173</a></span><span>分体空格键用 RGB 电流填表 <a href="../Materials/GT_SS_XENO_APP_20260916/src/h6/h6_hal.c#L1137">h6/h6_hal.c:1137</a></span><span>自检写槽索引，结束清零 <a href="../Materials/GT_SS_XENO_APP_20260916/src/h6/h6_hal.c#L1375">h6/h6_hal.c:1375</a></span></dd>
+    <dt>写错会怎样</dt><dd>在有灯的板上调错会使该通道过暗或偏亮；Lina 的 NC 焊盘无可见亮度变化。</dd></dl>
+  </div><span class="sr">不适用 / 公开</span>
+</details><details class="card" id="reg-06" data-status="na" data-write="false">
+  <summary><span class="card-top"><span class="addr">0x06</span><strong>LED_Current_2</strong></span>
+  <span class="meta"><span class="badge b-na">不适用</span><span>默认 <code>0x00</code></span><span>输出杂项</span></span>
+  <span class="metaphor">第二盏灯的独立亮度旋钮。</span></summary>
+  <div class="card-body">
+    <dl><dt>位定义</dt><dd>[7:0] k2；ILED2 = Imax × m × k2 / 255。 <a class="page" href="../Materials/GTRY164%20Magnetic%20Keyboard%20Sensor%20and%20LED%20Driver_V1.9_20261008%20%28Gtech%29.pdf#page=13">手册 p13</a></dd>
+    <dt>Lina 怎么配</dt><dd>保持 0x00，Lina 霍尔 PWM 未接灯。</dd>
+    <dt>H5 对照</dt><dd>H5 LED2 电流 0x1A，Lina 写 0xFF。</dd>
+    <dt>XENO 源码</dt><dd class="refs"><span>写 R_CUR，来自 Flash 白平衡 <a href="../Materials/GT_SS_XENO_APP_20260916/src/h6/h6_hal.c#L1174">h6/h6_hal.c:1174</a></span><span>无有效 Flash 时红色 0x21 <a href="../Materials/GT_SS_XENO_APP_20260916/src/h6/h6_hal.c#L73">h6/h6_hal.c:73</a></span></dd>
+    <dt>写错会怎样</dt><dd>在有灯的板上使红通道偏亮或偏暗；Lina 没有对应灯光响应。</dd></dl>
+  </div><span class="sr">不适用 / 公开</span>
+</details><details class="card" id="reg-07" data-status="na" data-write="false">
+  <summary><span class="card-top"><span class="addr">0x07</span><strong>LED_Current_3</strong></span>
+  <span class="meta"><span class="badge b-na">不适用</span><span>默认 <code>0x00</code></span><span>输出杂项</span></span>
+  <span class="metaphor">第三盏灯的独立亮度旋钮。</span></summary>
+  <div class="card-body">
+    <dl><dt>位定义</dt><dd>[7:0] k3；ILED3 = Imax × m × k3 / 255。 <a class="page" href="../Materials/GTRY164%20Magnetic%20Keyboard%20Sensor%20and%20LED%20Driver_V1.9_20261008%20%28Gtech%29.pdf#page=13">手册 p13</a></dd>
+    <dt>Lina 怎么配</dt><dd>保持 0x00。台架写入 0x11/0x2A 并恢复 0x00，用于验证写链路和地址参与 CRC。</dd>
+    <dt>H5 对照</dt><dd>H5 LED3 电流 0x1B，Lina 写 0xFF。H6 的 0x1B 是 SCK 空闲阈值。</dd>
+    <dt>XENO 源码</dt><dd class="refs"><span>写 G_CUR，来自 Flash 白平衡 <a href="../Materials/GT_SS_XENO_APP_20260916/src/h6/h6_hal.c#L1175">h6/h6_hal.c:1175</a></span><span>无有效 Flash 时绿色 0x3A <a href="../Materials/GT_SS_XENO_APP_20260916/src/h6/h6_hal.c#L74">h6/h6_hal.c:74</a></span></dd>
+    <dt>写错会怎样</dt><dd>若留在测试值，有灯的板会改变色平衡。Lina 两个回读值未恢复为 0x00 时，可据此发现恢复事务失败。</dd></dl>
+  </div><span class="sr">不适用 / 公开</span>
+</details><details class="card" id="reg-08" data-status="na" data-write="false">
+  <summary><span class="card-top"><span class="addr">0x08</span><strong>LED_Current_4</strong></span>
+  <span class="meta"><span class="badge b-na">不适用</span><span>默认 <code>0x00</code></span><span>输出杂项</span></span>
+  <span class="metaphor">第四盏灯的独立亮度旋钮。</span></summary>
+  <div class="card-body">
+    <dl><dt>位定义</dt><dd>[7:0] k4；ILED4 = Imax × m × k4 / 255。 <a class="page" href="../Materials/GTRY164%20Magnetic%20Keyboard%20Sensor%20and%20LED%20Driver_V1.9_20261008%20%28Gtech%29.pdf#page=13">手册 p13</a></dd>
+    <dt>Lina 怎么配</dt><dd>保持 0x00，Lina 霍尔 PWM 未接灯。</dd>
+    <dt>H5 对照</dt><dd>H5 LED4 电流 0x1C，Lina 写 0xFF；H6 同地址未公开。</dd>
+    <dt>XENO 源码</dt><dd class="refs"><span>写 B_CUR，来自 Flash 白平衡 <a href="../Materials/GT_SS_XENO_APP_20260916/src/h6/h6_hal.c#L1176">h6/h6_hal.c:1176</a></span><span>无有效 Flash 时蓝色 0x50 <a href="../Materials/GT_SS_XENO_APP_20260916/src/h6/h6_hal.c#L75">h6/h6_hal.c:75</a></span></dd>
+    <dt>写错会怎样</dt><dd>在有灯的板上导致蓝色比例错误；Lina 的 NC 焊盘无可见亮度变化。</dd></dl>
+  </div><span class="sr">不适用 / 公开</span>
+</details><details class="card" id="reg-09" data-status="write" data-write="true">
+  <summary><span class="card-top"><span class="addr">0x09</span><strong>LED_IMAX</strong></span>
+  <span class="meta"><span class="badge b-write">必须写</span><span>默认 <code>0x20</code></span><span>模拟前端</span></span>
+  <span class="metaphor">面板名字写着灯光，里面还有一个决定传感器放大倍数的拨档。</span></summary>
+  <div class="card-body">
+    <dl><dt>位定义</dt><dd>[7:6] 保留；[5] 联动 0x0B 的 LNA 选择；[4] LED 倍率 0→1.0、1→1.5；[3:0] LED Imax 档：0→0，1→0.6，2→1.2，3/4→1.8，5/8→2.4，6/9→3.0，7/A→3.6，B/C→4.2，D→4.8，E→5.4，F→6.0 mA。 <a class="page" href="../Materials/GTRY164%20Magnetic%20Keyboard%20Sensor%20and%20LED%20Driver_V1.9_20261008%20%28Gtech%29.pdf#page=13">手册 p13</a></dd>
+    <dt>Lina 怎么配</dt><dd>首版表显式写 0x20，固定 bit5=1、Imax=0；已读回 0x20 且期间无改写时，可省略这次相同值写入。</dd>
+    <dt>H5 对照</dt><dd>H5 LED Imax 分配在 0x1D/0x1E，m 在 0x1F；H5 LNA 在 0x14，灯光配置不承担这个 LNA 拨档。</dd>
+    <dt>XENO 源码</dt><dd class="refs"><span>PWM 初始化写 0x25 <a href="../Materials/GT_SS_XENO_APP_20260916/src/h6/h6_hal.c#L1178">h6/h6_hal.c:1178</a></span><span>产测写 0x2F，两者 bit5=1 <a href="../Materials/GT_SS_XENO_APP_20260916/src/demo/source_hal/mfg_mode.c#L891">demo/source_hal/mfg_mode.c:891</a></span></dd>
+    <dt>写错会怎样</dt><dd>误写 0x00 时，0x0B=0x88 的 LNA 从 24× 变为 16×，原始码跨度变小；与 0x99 搭配则落入手册保留组合。</dd></dl>
+  </div><span class="sr">必须写 / 我们要写 / 公开</span>
+</details><details class="card" id="reg-0B" data-status="trial" data-write="true">
+  <summary><span class="card-top"><span class="addr">0x0B</span><strong>Gain_Config0</strong></span>
+  <span class="meta"><span class="badge b-trial">待实测</span><span class="badge b-write">拟写</span><span>默认 <code>0x15</code></span><span>模拟前端</span></span>
+  <span class="metaphor">先用大倍率粗调，再用第二个旋钮细调。</span></summary>
+  <div class="card-body">
+    <dl><dt>位定义</dt><dd>[7:4] LNA：A/9/8 配 0x09[5]=1 对应 96×/48×/24×；8 配 bit5=0 对应 16×，其余组合保留。[3:0] PGA：0–9 依次 13.2/14.4/15.6/16.8/18.0/19.2/20.4/21.6/22.8/24.0×，其他保留。 <a class="page" href="../Materials/GTRY164%20Magnetic%20Keyboard%20Sensor%20and%20LED%20Driver_V1.9_20261008%20%28Gtech%29.pdf#page=13">手册 p13–14</a></dd>
+    <dt>Lina 怎么配</dt><dd>首测 0x88，24×/22.8×；若跨度不足且全行程还有明显余量，再试 0x99，48×/24×，同时更新 0x29/0x2A。默认 0x15 的 LNA 组合未由公开表定义。</dd>
+    <dt>H5 对照</dt><dd>Lina H5 的 0x14=0x35 对应 64× LNA、0x16=0x04 对应 18.0× PGA。H6 公开档中没有 64×。</dd>
+    <dt>XENO 源码</dt><dd class="refs"><span>Flash 回退 0x88 <a href="../Materials/GT_SS_XENO_APP_20260916/src/demo/include_hal/mfg_mode.h#L34">demo/include_hal/mfg_mode.h:34</a></span><span>加载逐键 Flash 或默认 <a href="../Materials/GT_SS_XENO_APP_20260916/src/demo/source_hal/mfg_mode.c#L2300">demo/source_hal/mfg_mode.c:2300</a></span><span>写逐键增益，随后写两项 trim <a href="../Materials/GT_SS_XENO_APP_20260916/src/h6/h6_hal.c#L1000">h6/h6_hal.c:1000</a></span></dd>
+    <dt>写错会怎样</dt><dd>过低时轻按与空闲噪声重叠；过高时原始 ADC 贴顶或贴底，后段行程压平。保留组合的实际增益待确认。</dd></dl>
+  </div><span class="sr">待实测 / 我们要写 / 公开</span>
+</details><details class="card" id="reg-0C" data-status="write" data-write="true">
+  <summary><span class="card-top"><span class="addr">0x0C</span><strong>Test_Reg0</strong></span>
+  <span class="meta"><span class="badge b-write">必须写</span><span>默认 <code>0xAA</code></span><span>模拟前端</span></span>
+  <span class="metaphor">出厂停在启动位，正常配置还要把开关拨到工作位。</span></summary>
+  <div class="card-body">
+    <dl><dt>位定义</dt><dd>整字节固定写 0x83；手册未细分各位。 <a class="page" href="../Materials/GTRY164%20Magnetic%20Keyboard%20Sensor%20and%20LED%20Driver_V1.9_20261008%20%28Gtech%29.pdf#page=14">手册 p14</a></dd>
+    <dt>Lina 怎么配</dt><dd>首项写 0x83 并读回。上电读到 0xAA 时需要写入。</dd>
+    <dt>H5 对照</dt><dd>H5 同地址是 Test_Reg0，但固定值和默认都是 0xB5，Lina H5 写 0xB5。</dd>
+    <dt>XENO 源码</dt><dd class="refs"><span>常规配置 0x83 <a href="../Materials/GT_SS_XENO_APP_20260916/src/h6/h6_hal.c#L1221">h6/h6_hal.c:1221</a></span><span>偏差校准入口也写 0x83 <a href="../Materials/GT_SS_XENO_APP_20260916/src/h6/h6_offset_cali.c#L399">h6/h6_offset_cali.c:399</a></span></dd>
+    <dt>写错会怎样</dt><dd>漏写时读回会停在 0xAA，配置验收失败；模拟链的具体表现手册未说明，采样需另验。</dd></dl>
+  </div><span class="sr">必须写 / 我们要写 / 公开</span>
+</details><details class="card" id="reg-0F" data-status="trial" data-write="true">
+  <summary><span class="card-top"><span class="addr">0x0F</span><strong>Sample_Interval_L</strong></span>
+  <span class="meta"><span class="badge b-trial">待实测</span><span class="badge b-write">拟写</span><span>默认 <code>0x20</code></span><span>采样节拍</span></span>
+  <span class="metaphor">采样节拍器的低位刻度。</span></summary>
+  <div class="card-body">
+    <dl><dt>位定义</dt><dd>[7:0] 为 12 位采样间隔低字节；与 0x10[3:0] 拼接，乘 4 µs。 <a class="page" href="../Materials/GTRY164%20Magnetic%20Keyboard%20Sensor%20and%20LED%20Driver_V1.9_20261008%20%28Gtech%29.pdf#page=14">手册 p14</a></dd>
+    <dt>Lina 怎么配</dt><dd>首测 0x1F，加 0x10=0x20 得 124 µs；对照组用 0x07，得 28 µs。默认 0x20 在高位为 0 时对应 128 µs。</dd>
+    <dt>H5 对照</dt><dd>Lina H5 0x0A=0x0B、0x0B=0x00，得到 11×4+80=124 µs；H6 删去 +80 µs 的偏置。</dd>
+    <dt>XENO 源码</dt><dd class="refs"><span>常规 0x07 <a href="../Materials/GT_SS_XENO_APP_20260916/src/h6/h6_hal.c#L1320">h6/h6_hal.c:1320</a></span><span>偏差校准恢复 0x07 <a href="../Materials/GT_SS_XENO_APP_20260916/src/h6/h6_hal.c#L1285">h6/h6_hal.c:1285</a></span><span>应用另按槽写 0x1F/0xFA <a href="../Materials/GT_SS_XENO_APP_20260916/src/demo/main.c#L480">demo/main.c:480</a></span></dd>
+    <dt>写错会怎样</dt><dd>把 H5 的 0x0B 抄到这里会变成 44 µs；内部数据更新频率和既有延迟预算随之变化。</dd></dl>
+  </div><span class="sr">待实测 / 我们要写 / 公开</span>
+</details><details class="card" id="reg-10" data-status="write" data-write="true">
+  <summary><span class="card-top"><span class="addr">0x10</span><strong>Sample_Interval_H</strong></span>
+  <span class="meta"><span class="badge b-write">必须写</span><span>默认 <code>0x20</code></span><span>采样节拍</span></span>
+  <span class="metaphor">节拍器的高位刻度，上面另有厂家要求保留的标记。</span></summary>
+  <div class="card-body">
+    <dl><dt>位定义</dt><dd>[7:4] 固定 0x2；[3:0] 为间隔高四位。N=((0x10&amp;0x0F)×256)+0x0F 寄存器的数值，T=4N µs，N=0–6 禁用。 <a class="page" href="../Materials/GTRY164%20Magnetic%20Keyboard%20Sensor%20and%20LED%20Driver_V1.9_20261008%20%28Gtech%29.pdf#page=14">手册 p14</a></dd>
+    <dt>Lina 怎么配</dt><dd>显式写 0x20，使高四位固定为 0x2 且 N 的高四位为零；已确认默认且无改写时，写与不写可等效。</dd>
+    <dt>H5 对照</dt><dd>H5 的粗间隔 0x0B 是单独的毫秒量；Lina H5 写 0x00，H6 这里是同一个 N 的高位。</dd>
+    <dt>XENO 源码</dt><dd class="refs"><span>偏差校准恢复写 0x20 <a href="../Materials/GT_SS_XENO_APP_20260916/src/h6/h6_hal.c#L1286">h6/h6_hal.c:1286</a></span><span>校准也写 0x20 <a href="../Materials/GT_SS_XENO_APP_20260916/src/h6/h6_offset_cali.c#L412">h6/h6_offset_cali.c:412</a></span></dd>
+    <dt>写错会怎样</dt><dd>0x21 会把 N 加 256，即间隔多 1024 µs；高半字节写错则违反固定值，具体硬件后果待确认。</dd></dl>
+  </div><span class="sr">必须写 / 我们要写 / 公开</span>
+</details><details class="card" id="reg-11" data-status="na" data-write="false">
+  <summary><span class="card-top"><span class="addr">0x11</span><strong>Sampling_Interval_SPS</strong></span>
+  <span class="meta"><span class="badge b-na">不适用</span><span>默认 <code>0x00</code></span><span>采样节拍</span></span>
+  <span class="metaphor">休眠前慢拍模式的节拍器。</span></summary>
+  <div class="card-body">
+    <dl><dt>位定义</dt><dd>[7:0] SPS 松开态间隔参数，实际为 (值+1) ms；按下态仍使用 0x0F/0x10。 <a class="page" href="../Materials/GTRY164%20Magnetic%20Keyboard%20Sensor%20and%20LED%20Driver_V1.9_20261008%20%28Gtech%29.pdf#page=14">手册 p14</a></dd>
+    <dt>Lina 怎么配</dt><dd>首版关闭 SPS，保持 0x00。若启用则是 1 ms 的松开态间隔。</dd>
+    <dt>H5 对照</dt><dd>H5 使用 0x0A 的快间隔加 0x0B 的毫秒粗间隔作松开态周期；Lina H5 关闭 SPS。</dd>
+    <dt>XENO 源码</dt><dd class="refs"><span>仅见地址定义，未定位显式初始化写入 <a href="../Materials/GT_SS_XENO_APP_20260916/src/h6/h6_drv.h#L119">h6/h6_drv.h:119</a></span></dd>
+    <dt>写错会怎样</dt><dd>启用 SPS 时写大了会延后空闲后的首次动作检测；首版 SPS 关闭时观察不到这类变化。</dd></dl>
+  </div><span class="sr">不适用 / 公开</span>
+</details><details class="card" id="reg-12" data-status="na" data-write="false">
+  <summary><span class="card-top"><span class="addr">0x12</span><strong>Key_Released_Timeout</strong></span>
+  <span class="meta"><span class="badge b-na">不适用</span><span>默认 <code>0x3C</code></span><span>按键判定</span></span>
+  <span class="metaphor">松手后过多久才切换到慢速。</span></summary>
+  <div class="card-body">
+    <dl><dt>位定义</dt><dd>[7:0] SPS 松键保持阈值，实际为 (值+1) 秒；默认 0x3C 对应 61 秒。 <a class="page" href="../Materials/GTRY164%20Magnetic%20Keyboard%20Sensor%20and%20LED%20Driver_V1.9_20261008%20%28Gtech%29.pdf#page=14">手册 p14–15</a></dd>
+    <dt>Lina 怎么配</dt><dd>首版关闭 SPS，保持 0x3C。</dd>
+    <dt>H5 对照</dt><dd>H5 松键超时在 0x0E，Lina 写 0x1F 且关闭 SPS；H5 p11 给出 1–255 秒，不能照搬 H6 编码。</dd>
+    <dt>XENO 源码</dt><dd class="refs"><span>仅见地址定义，未定位显式初始化写入 <a href="../Materials/GT_SS_XENO_APP_20260916/src/h6/h6_drv.h#L120">h6/h6_drv.h:120</a></span></dd>
+    <dt>写错会怎样</dt><dd>SPS 开启时设太短会提前降速，太长会推迟省电。关 SPS 时这项不决定采样节拍。</dd></dl>
+  </div><span class="sr">不适用 / 公开</span>
+</details><details class="card" id="reg-1B" data-status="na" data-write="false">
+  <summary><span class="card-top"><span class="addr">0x1B</span><strong>SCK_Idle_Time</strong></span>
+  <span class="meta"><span class="badge b-na">不适用</span><span>默认 <code>0x07</code></span><span>按键判定</span></span>
+  <span class="metaphor">时钟沉默多久才把回线交给中断通知。</span></summary>
+  <div class="card-body">
+    <dl><dt>位定义</dt><dd>[7:5] 固定 0；[4:0] 空闲检测码 n，阈值 (n+3)/2 µs；默认 5 µs。只用于 SCK 低电平触发中断模式。 <a class="page" href="../Materials/GTRY164%20Magnetic%20Keyboard%20Sensor%20and%20LED%20Driver_V1.9_20261008%20%28Gtech%29.pdf#page=15">手册 p15</a></dd>
+    <dt>Lina 怎么配</dt><dd>首版走轮询，保持 0x07。</dd>
+    <dt>H5 对照</dt><dd>H5 的 0x1B 是 LED3 电流，Lina 写 0xFF；H5 无对应公开的 SCK 静默触发寄存器。</dd>
+    <dt>XENO 源码</dt><dd class="refs"><span>写 0x01，对应 2 µs <a href="../Materials/GT_SS_XENO_APP_20260916/src/h6/h6_hal.c#L1321">h6/h6_hal.c:1321</a></span></dd>
+    <dt>写错会怎样</dt><dd>开启空闲触发时设得过短会在普通间隙切入中断模式，SDO 会用于中断指示；太长会延迟进入。</dd></dl>
+  </div><span class="sr">不适用 / 公开</span>
+</details><details class="card" id="reg-26" data-status="default" data-write="false">
+  <summary><span class="card-top"><span class="addr">0x26</span><strong>Test_Reg1</strong></span>
+  <span class="meta"><span class="badge b-default">默认即可</span><span>默认 <code>0x0A</code></span><span>模拟前端</span></span>
+  <span class="metaphor">厂家指定的一档开关。</span></summary>
+  <div class="card-body">
+    <dl><dt>位定义</dt><dd>整字节固定 0x0A；子位未公开。 <a class="page" href="../Materials/GTRY164%20Magnetic%20Keyboard%20Sensor%20and%20LED%20Driver_V1.9_20261008%20%28Gtech%29.pdf#page=15">手册 p15</a></dd>
+    <dt>Lina 怎么配</dt><dd>干净上电保持 0x0A；若执行过改写它的校准流程，恢复 0x0A。</dd>
+    <dt>H5 对照</dt><dd>H5 也有固定测试寄存器，例如 0x0D=0x02；无已证实的一对一功能映射。</dd>
+    <dt>XENO 源码</dt><dd class="refs"><span>常规 0x0A <a href="../Materials/GT_SS_XENO_APP_20260916/src/h6/h6_hal.c#L1224">h6/h6_hal.c:1224</a></span><span>偏差校准暂写 0x00 <a href="../Materials/GT_SS_XENO_APP_20260916/src/h6/h6_offset_cali.c#L422">h6/h6_offset_cali.c:422</a></span><span>恢复 0x0A <a href="../Materials/GT_SS_XENO_APP_20260916/src/h6/h6_hal.c#L1295">h6/h6_hal.c:1295</a></span></dd>
+    <dt>写错会怎样</dt><dd>异值会被固定配置读回检查发现；对原始 ADC 的具体影响未公开，应在校准前后比较。</dd></dl>
+  </div><span class="sr">默认即可 / 公开</span>
+</details><details class="card" id="reg-27" data-status="default" data-write="false">
+  <summary><span class="card-top"><span class="addr">0x27</span><strong>Test_Reg2</strong></span>
+  <span class="meta"><span class="badge b-default">默认即可</span><span>默认 <code>0x05</code></span><span>模拟前端</span></span>
+  <span class="metaphor">厂家指定的第二个开关档位。</span></summary>
+  <div class="card-body">
+    <dl><dt>位定义</dt><dd>整字节固定 0x05；子位未公开。 <a class="page" href="../Materials/GTRY164%20Magnetic%20Keyboard%20Sensor%20and%20LED%20Driver_V1.9_20261008%20%28Gtech%29.pdf#page=15">手册 p15</a></dd>
+    <dt>Lina 怎么配</dt><dd>保持 0x05；校准若临时改写，结束须恢复。</dd>
+    <dt>H5 对照</dt><dd>H5 的同地址 0x27 是温度补偿，Lina 写 0x00；H5 固定值体系例 0x11=0x00。</dd>
+    <dt>XENO 源码</dt><dd class="refs"><span>常规 0x05 <a href="../Materials/GT_SS_XENO_APP_20260916/src/h6/h6_hal.c#L1225">h6/h6_hal.c:1225</a></span><span>偏差校准暂写 0x00 <a href="../Materials/GT_SS_XENO_APP_20260916/src/h6/h6_offset_cali.c#L423">h6/h6_offset_cali.c:423</a></span><span>恢复 0x05 <a href="../Materials/GT_SS_XENO_APP_20260916/src/h6/h6_hal.c#L1296">h6/h6_hal.c:1296</a></span></dd>
+    <dt>写错会怎样</dt><dd>照抄 H5 的 0x00 会留下偏离固定值的回读，XENO 只在校准中暂用此值；常规采样影响待确认。</dd></dl>
+  </div><span class="sr">默认即可 / 公开</span>
+</details><details class="card" id="reg-28" data-status="default" data-write="false">
+  <summary><span class="card-top"><span class="addr">0x28</span><strong>Test_Reg3</strong></span>
+  <span class="meta"><span class="badge b-default">默认即可</span><span>默认 <code>0x04</code></span><span>模拟前端</span></span>
+  <span class="metaphor">出厂指定的第三个开关档位。</span></summary>
+  <div class="card-body">
+    <dl><dt>位定义</dt><dd>整字节固定 0x04；子位未公开。 <a class="page" href="../Materials/GTRY164%20Magnetic%20Keyboard%20Sensor%20and%20LED%20Driver_V1.9_20261008%20%28Gtech%29.pdf#page=15">手册 p15</a></dd>
+    <dt>Lina 怎么配</dt><dd>保持 0x04；复用校准流程时确认恢复为 0x04。</dd>
+    <dt>H5 对照</dt><dd>H5 也有固定值，例如 0x12=0x47；无同功能公开映射。</dd>
+    <dt>XENO 源码</dt><dd class="refs"><span>常规 0x04 <a href="../Materials/GT_SS_XENO_APP_20260916/src/h6/h6_hal.c#L1226">h6/h6_hal.c:1226</a></span><span>恢复写 0x04 <a href="../Materials/GT_SS_XENO_APP_20260916/src/h6/h6_hal.c#L1297">h6/h6_hal.c:1297</a></span></dd>
+    <dt>写错会怎样</dt><dd>写成别的数能在回读比对发现，手册没有给出哪种噪声或偏移会变化。</dd></dl>
+  </div><span class="sr">默认即可 / 公开</span>
+</details><details class="card" id="reg-29" data-status="write" data-write="true">
+  <summary><span class="card-top"><span class="addr">0x29</span><strong>Gain_Config1</strong></span>
+  <span class="meta"><span class="badge b-write">随增益联动</span><span>默认 <code>0x40</code></span><span>模拟前端</span></span>
+  <span class="metaphor">换镜头倍率时，要跟着换第一片校正镜。</span></summary>
+  <div class="card-body">
+    <dl><dt>位定义</dt><dd>整字节随 LNA 档。16×→0x50，24×→0x60，48×→0xA0，96×→0xF0；子位未公开。 <a class="page" href="../Materials/GTRY164%20Magnetic%20Keyboard%20Sensor%20and%20LED%20Driver_V1.9_20261008%20%28Gtech%29.pdf#page=15">手册 p15</a></dd>
+    <dt>Lina 怎么配</dt><dd>随 0x0B。首测 24× 写 0x60，试 48× 写 0xA0，当前默认 0x40 不匹配这两档。</dd>
+    <dt>H5 对照</dt><dd>H5 公开 LNA 写 0x14，无公开的同类联动寄存器。</dd>
+    <dt>XENO 源码</dt><dd class="refs"><span>16× 用 0x4E <a href="../Materials/GT_SS_XENO_APP_20260916/src/h6/h6_hal.c#L953">h6/h6_hal.c:953</a></span><span>24× 写 0x60 <a href="../Materials/GT_SS_XENO_APP_20260916/src/h6/h6_hal.c#L958">h6/h6_hal.c:958</a></span><span>48× 写 0xA0 <a href="../Materials/GT_SS_XENO_APP_20260916/src/h6/h6_hal.c#L963">h6/h6_hal.c:963</a></span><span>96× 写 0xF0 <a href="../Materials/GT_SS_XENO_APP_20260916/src/h6/h6_hal.c#L968">h6/h6_hal.c:968</a></span><span>联动提交 <a href="../Materials/GT_SS_XENO_APP_20260916/src/h6/h6_hal.c#L1003">h6/h6_hal.c:1003</a></span></dd>
+    <dt>写错会怎样</dt><dd>切增益但保留旧 trim 时，回读三元组不一致；原始码偏移、跨度及噪声是要对照的指标，方向未由手册定义。</dd></dl>
+  </div><span class="sr">随增益联动 / 我们要写 / 公开</span>
+</details><details class="card" id="reg-2A" data-status="write" data-write="true">
+  <summary><span class="card-top"><span class="addr">0x2A</span><strong>Gain_Config2</strong></span>
+  <span class="meta"><span class="badge b-write">随增益联动</span><span>默认 <code>0x32</code></span><span>模拟前端</span></span>
+  <span class="metaphor">同一倍率的第二片校正镜也要成对更换。</span></summary>
+  <div class="card-body">
+    <dl><dt>位定义</dt><dd>整字节随 LNA 档。16×→0x20，24×→0x28，48×→0x40，96×→0x60；子位未公开。 <a class="page" href="../Materials/GTRY164%20Magnetic%20Keyboard%20Sensor%20and%20LED%20Driver_V1.9_20261008%20%28Gtech%29.pdf#page=15">手册 p15</a></dd>
+    <dt>Lina 怎么配</dt><dd>首测 24× 写 0x28；试 48× 写 0x40。16× 按手册与 0x29 一起配置，和 XENO 的配对存在差异。</dd>
+    <dt>H5 对照</dt><dd>H5 没有公开的同类联动寄存器，Lina H5 的 PGA 在 0x16。</dd>
+    <dt>XENO 源码</dt><dd class="refs"><span>16× 用 0x32 <a href="../Materials/GT_SS_XENO_APP_20260916/src/h6/h6_hal.c#L955">h6/h6_hal.c:955</a></span><span>24× 写 0x28 <a href="../Materials/GT_SS_XENO_APP_20260916/src/h6/h6_hal.c#L959">h6/h6_hal.c:959</a></span><span>48× 写 0x40 <a href="../Materials/GT_SS_XENO_APP_20260916/src/h6/h6_hal.c#L964">h6/h6_hal.c:964</a></span><span>96× 写 0x60 <a href="../Materials/GT_SS_XENO_APP_20260916/src/h6/h6_hal.c#L969">h6/h6_hal.c:969</a></span><span>联动提交 <a href="../Materials/GT_SS_XENO_APP_20260916/src/h6/h6_hal.c#L1006">h6/h6_hal.c:1006</a></span></dd>
+    <dt>写错会怎样</dt><dd>应用增益档与 trim 不成对时，三元组回读即不合格；需检查同样行程的原始码及噪声是否改变。</dd></dl>
+  </div><span class="sr">随增益联动 / 我们要写 / 公开</span>
+</details><details class="card" id="reg-2B" data-status="na" data-write="false">
+  <summary><span class="card-top"><span class="addr">0x2B</span><strong>Press_Key_Threshold_L</strong></span>
+  <span class="meta"><span class="badge b-na">不适用</span><span>默认 <code>0xDC</code></span><span>按键判定</span></span>
+  <span class="metaphor">门槛数字的后两位。</span></summary>
+  <div class="card-body">
+    <dl><dt>位定义</dt><dd>[7:0] 为 14 位按键阈值的低 8 位，与 0x2C[5:0] 拼接。 <a class="page" href="../Materials/GTRY164%20Magnetic%20Keyboard%20Sensor%20and%20LED%20Driver_V1.9_20261008%20%28Gtech%29.pdf#page=15">手册 p15</a></dd>
+    <dt>Lina 怎么配</dt><dd>首版不启用芯片中断或 SPS，保留 0xDC；阈值等原始曲线采集后再设。</dd>
+    <dt>H5 对照</dt><dd>H5 0x0F 是 SPS 松键阈值低字节，Lina 写 0x00；常规触发由 MCU 软件判断。</dd>
+    <dt>XENO 源码</dt><dd class="refs"><span>写 H6_TH <a href="../Materials/GT_SS_XENO_APP_20260916/src/h6/h6_hal.c#L1322">h6/h6_hal.c:1322</a></span><span>H6_TH 设为 0x03 <a href="../Materials/GT_SS_XENO_APP_20260916/src/h6/h6_hw_tab.h#L67">h6/h6_hw_tab.h:67</a></span></dd>
+    <dt>写错会怎样</dt><dd>芯片判定开启时，阈值太接近静止噪声会来回触发，超出实测行程会按不到阈值。</dd></dl>
+  </div><span class="sr">不适用 / 公开</span>
+</details><details class="card" id="reg-2C" data-status="na" data-write="false">
+  <summary><span class="card-top"><span class="addr">0x2C</span><strong>Press_Key_Threshold_H</strong></span>
+  <span class="meta"><span class="badge b-na">不适用</span><span>默认 <code>0x1E</code></span><span>按键判定</span></span>
+  <span class="metaphor">门槛数字的高位和跨越方向写在同一张卡。</span></summary>
+  <div class="card-body">
+    <dl><dt>位定义</dt><dd>[7] 保留；[6] Key_Type1，1 表示按下码增加且超过阈值，0 表示按下码减小且低于阈值；[5:0] 阈值高 6 位。 <a class="page" href="../Materials/GTRY164%20Magnetic%20Keyboard%20Sensor%20and%20LED%20Driver_V1.9_20261008%20%28Gtech%29.pdf#page=15">手册 p15</a></dd>
+    <dt>Lina 怎么配</dt><dd>首版保留 0x1E。若启用芯片判定，必须和 0x2B 及真实按压方向一起配。</dd>
+    <dt>H5 对照</dt><dd>H5 0x10[7] 是 SPS 极性，[5:0] 是松开阈值高位；Lina 写 0x10。</dd>
+    <dt>XENO 源码</dt><dd class="refs"><span>写 0x40，与 0x2B=0x03 形成阈值 3、方向增加 <a href="../Materials/GT_SS_XENO_APP_20260916/src/h6/h6_hal.c#L1323">h6/h6_hal.c:1323</a></span></dd>
+    <dt>写错会怎样</dt><dd>写反 bit6 会让内部判定把静止当按下或按下仍不触发；把方向位当作阈值高位也会算错比较值。</dd></dl>
+  </div><span class="sr">不适用 / 公开</span>
+</details><details class="card" id="reg-2D" data-status="default" data-write="false">
+  <summary><span class="card-top"><span class="addr">0x2D</span><strong>Baseline_Initial_Value_L</strong></span>
+  <span class="meta"><span class="badge b-default">默认即可</span><span>默认 <code>0x00</code></span><span>基线</span></span>
+  <span class="metaphor">归零参考数的低位。</span></summary>
+  <div class="card-body">
+    <dl><dt>位定义</dt><dd>[7:0] 顶部基线初值低位；H6 硬件只支持 TOP 基线。配 0x2E 默认合成 8192。 <a class="page" href="../Materials/GTRY164%20Magnetic%20Keyboard%20Sensor%20and%20LED%20Driver_V1.9_20261008%20%28Gtech%29.pdf#page=15">手册 p15–16</a></dd>
+    <dt>Lina 怎么配</dt><dd>首版由 MCU 管基线，保留 0x00；开启硬件跟踪前应测实际松开值。</dd>
+    <dt>H5 对照</dt><dd>H5 无公开的硬件 TOP 基线寄存器，Lina MCU 软件维护顶、底基线。</dd>
+    <dt>XENO 源码</dt><dd class="refs"><span>逐键 Flash 数据取低 8 位 <a href="../Materials/GT_SS_XENO_APP_20260916/src/h6/h6_hal.c#L886">h6/h6_hal.c:886</a></span><span>先写低位 <a href="../Materials/GT_SS_XENO_APP_20260916/src/h6/h6_hal.c#L891">h6/h6_hal.c:891</a></span><span>恢复 Flash 初值调用 <a href="../Materials/GT_SS_XENO_APP_20260916/src/h6/h6_hal.c#L936">h6/h6_hal.c:936</a></span></dd>
+    <dt>写错会怎样</dt><dd>启用硬件基线时写错低位会使初始参考偏移最多 255 码，观察 0x3C 起始值是否偏离松开位置。</dd></dl>
+  </div><span class="sr">默认即可 / 公开</span>
+</details><details class="card" id="reg-2E" data-status="default" data-write="false">
+  <summary><span class="card-top"><span class="addr">0x2E</span><strong>Baseline_Initial_Value_H</strong></span>
+  <span class="meta"><span class="badge b-default">默认即可</span><span>默认 <code>0x20</code></span><span>基线</span></span>
+  <span class="metaphor">参考零点数字的高位，合上这一步才把完整数字设好。</span></summary>
+  <div class="card-body">
+    <dl><dt>位定义</dt><dd>[7:6] 保留；[5:0] 顶部基线高 6 位。先写 0x2D，再写本寄存器。0x33[0]=1 时自动用实时 ADC 更新初值。 <a class="page" href="../Materials/GTRY164%20Magnetic%20Keyboard%20Sensor%20and%20LED%20Driver_V1.9_20261008%20%28Gtech%29.pdf#page=16">手册 p16</a></dd>
+    <dt>Lina 怎么配</dt><dd>首版保留 0x20。启用硬件基线时按松开实测值拆分，并按手册低位先写。</dd>
+    <dt>H5 对照</dt><dd>H5 无对应；Lina MCU 软件按键维护 TOP/底部基线。</dd>
+    <dt>XENO 源码</dt><dd class="refs"><span>逐键 Flash 数据取高 6 位 <a href="../Materials/GT_SS_XENO_APP_20260916/src/h6/h6_hal.c#L887">h6/h6_hal.c:887</a></span><span>再写高位 <a href="../Materials/GT_SS_XENO_APP_20260916/src/h6/h6_hal.c#L894">h6/h6_hal.c:894</a></span><span>恢复 Flash 初值调用 <a href="../Materials/GT_SS_XENO_APP_20260916/src/h6/h6_hal.c#L936">h6/h6_hal.c:936</a></span></dd>
+    <dt>写错会怎样</dt><dd>高位错一档会差 256 码；写入顺序错误时，0x3C 起值可能不是拼接的目标，需用实测判断。</dd></dl>
+  </div><span class="sr">默认即可 / 公开</span>
+</details><details class="card" id="reg-2F" data-status="default" data-write="false">
+  <summary><span class="card-top"><span class="addr">0x2F</span><strong>Test_Reg4</strong></span>
+  <span class="meta"><span class="badge b-default">默认即可</span><span>默认 <code>0x14</code></span><span>基线</span></span>
+  <span class="metaphor">厂规指定的基线配置档。</span></summary>
+  <div class="card-body">
+    <dl><dt>位定义</dt><dd>整字节固定 0x14；手册未细分各位。 <a class="page" href="../Materials/GTRY164%20Magnetic%20Keyboard%20Sensor%20and%20LED%20Driver_V1.9_20261008%20%28Gtech%29.pdf#page=16">手册 p16</a></dd>
+    <dt>Lina 怎么配</dt><dd>保持 0x14；首版不带入 XENO 的临时 0x02。</dd>
+    <dt>H5 对照</dt><dd>H5 无公开的同款固定档；H5 的 0x17=0x7C 是另一固定值。</dd>
+    <dt>XENO 源码</dt><dd class="refs"><span>无 Flash 初值时暂写 0x02 <a href="../Materials/GT_SS_XENO_APP_20260916/src/h6/h6_hal.c#L1334">h6/h6_hal.c:1334</a></span><span>恢复 0x14 <a href="../Materials/GT_SS_XENO_APP_20260916/src/h6/h6_hal.c#L1340">h6/h6_hal.c:1340</a></span></dd>
+    <dt>写错会怎样</dt><dd>留下 0x02 会使固定值验收失败，同时脱离 XENO 的成套流程；它对 Lina 芯片内部的具体效果待确认。</dd></dl>
+  </div><span class="sr">默认即可 / 公开</span>
+</details><details class="card" id="reg-30" data-status="default" data-write="false">
+  <summary><span class="card-top"><span class="addr">0x30</span><strong>Baseline_Positive_Deviation</strong></span>
+  <span class="meta"><span class="badge b-default">默认即可</span><span>默认 <code>0x20</code></span><span>基线</span></span>
+  <span class="metaphor">零点跟踪的上护栏。</span></summary>
+  <div class="card-body">
+    <dl><dt>位定义</dt><dd>[7:0] BASL_PDEL。只有低于初值 + 16×PDEL 的样本能满足上边界；默认允许正向 512 码。 <a class="page" href="../Materials/GTRY164%20Magnetic%20Keyboard%20Sensor%20and%20LED%20Driver_V1.9_20261008%20%28Gtech%29.pdf#page=16">手册 p16</a></dd>
+    <dt>Lina 怎么配</dt><dd>保留 0x20。启用硬件基线后，用松开态抖动与按键行程对照护栏范围。</dd>
+    <dt>H5 对照</dt><dd>H5 无同类公开寄存器，Lina 在 MCU 做顶基线校准。</dd>
+    <dt>XENO 源码</dt><dd class="refs"><span>写 0x20 <a href="../Materials/GT_SS_XENO_APP_20260916/src/h6/h6_hal.c#L1343">h6/h6_hal.c:1343</a></span></dd>
+    <dt>写错会怎样</dt><dd>正侧窗太窄会拒绝正常向上漂移，太宽则可让正侧按压样本进入基线候选。</dd></dl>
+  </div><span class="sr">默认即可 / 公开</span>
+</details><details class="card" id="reg-31" data-status="default" data-write="false">
+  <summary><span class="card-top"><span class="addr">0x31</span><strong>Baseline_negative_deviation</strong></span>
+  <span class="meta"><span class="badge b-default">默认即可</span><span>默认 <code>0x20</code></span><span>基线</span></span>
+  <span class="metaphor">零点跟踪的下护栏。</span></summary>
+  <div class="card-body">
+    <dl><dt>位定义</dt><dd>[7:0] BASL_NDEL。只有高于初值 − 16×NDEL 的样本能满足下边界；默认允许负向 512 码。 <a class="page" href="../Materials/GTRY164%20Magnetic%20Keyboard%20Sensor%20and%20LED%20Driver_V1.9_20261008%20%28Gtech%29.pdf#page=16">手册 p16</a></dd>
+    <dt>Lina 怎么配</dt><dd>保留 0x20，Lina 按压方向尚需 H6 实测，尤其要关注负侧样本界限。</dd>
+    <dt>H5 对照</dt><dd>H5 无同类公开寄存器，Lina 在 MCU 做顶、底基线校准。</dd>
+    <dt>XENO 源码</dt><dd class="refs"><span>写 0x20 <a href="../Materials/GT_SS_XENO_APP_20260916/src/h6/h6_hal.c#L1344">h6/h6_hal.c:1344</a></span></dd>
+    <dt>写错会怎样</dt><dd>负侧窗太窄会使正常松开漂移不参与更新；太宽可把负向按压样本纳入基线候选。</dd></dl>
+  </div><span class="sr">默认即可 / 公开</span>
+</details><details class="card" id="reg-32" data-status="trial" data-write="true">
+  <summary><span class="card-top"><span class="addr">0x32</span><strong>Key_Type</strong></span>
+  <span class="meta"><span class="badge b-trial">待实测</span><span class="badge b-write">拟写</span><span>默认 <code>0x41</code></span><span>按键判定</span></span>
+  <span class="metaphor">分别标出传感器方向、按压方向和省电开关。</span></summary>
+  <div class="card-body">
+    <dl><dt>位定义</dt><dd>[7] 磁场输入极性反转；[6] Key_Type2，1 按下码增加、0 按下码减小；[5] 固定 0；[4] SPS 使能；[3:0] 固定 1。 <a class="page" href="../Materials/GTRY164%20Magnetic%20Keyboard%20Sensor%20and%20LED%20Driver_V1.9_20261008%20%28Gtech%29.pdf#page=16">手册 p16</a></dd>
+    <dt>Lina 怎么配</dt><dd>先写 0x01，bit7=0、bit6=0、SPS 关，沿用 Lina H5 PWM 的下降假设。分别按两键看原始码；如果实际增加可试 0x41，并同步复核 MCU 方向。</dd>
+    <dt>H5 对照</dt><dd>H5 SPS 使能在 0x18[0]，极性在 0x10[7]。Lina H5 PWM 软件按压值下降，再把原始码反向归一。</dd>
+    <dt>XENO 源码</dt><dd class="refs"><span>常规 0x41 <a href="../Materials/GT_SS_XENO_APP_20260916/src/h6/h6_hal.c#L1325">h6/h6_hal.c:1325</a></span><span>KEY_DOWN_INCREASES 为 1 <a href="../Materials/GT_SS_XENO_APP_20260916/src/h6/h6_hw_tab.h#L64">h6/h6_hw_tab.h:64</a></span><span>校准恢复另用 0x4F，低位与 V1.9 固定值不同 <a href="../Materials/GT_SS_XENO_APP_20260916/src/h6/h6_hal.c#L1287">h6/h6_hal.c:1287</a></span></dd>
+    <dt>写错会怎样</dt><dd>误开 bit7 会翻转原始磁场极性；bit6 设错会让芯片的按键方向判定反向；误开 bit4 会在松开时切换到慢速。</dd></dl>
+  </div><span class="sr">待实测 / 我们要写 / 公开</span>
+</details><details class="card" id="reg-33" data-status="write" data-write="true">
+  <summary><span class="card-top"><span class="addr">0x33</span><strong>Work_Mode</strong></span>
+  <span class="meta"><span class="badge b-write">必须写</span><span>默认 <code>0x00</code></span><span>采样节拍</span></span>
+  <span class="metaphor">生产线总电源，以及旁边三种自动功能的开关。</span></summary>
+  <div class="card-body">
+    <dl><dt>位定义</dt><dd>[7] 0 单次、1 连续，切换后等待 50 µs 才读转换数据；[6] 固定 0；[5] 中断使能；[4] 0 命令触发、1 SCK 静默触发；[3] 中断触发时首颗为 0、后续为 1，其他模式全 0；[2] TOP 基线使能；[1] 固定 0；[0] 自动更新基线初值。 <a class="page" href="../Materials/GTRY164%20Magnetic%20Keyboard%20Sensor%20and%20LED%20Driver_V1.9_20261008%20%28Gtech%29.pdf#page=17">手册 p17</a></dd>
+    <dt>Lina 怎么配</dt><dd>最后写 0x80，首版连续转换、轮询、硬件基线关闭。0x84 是有证据后测试硬件 TOP 基线的对照。</dd>
+    <dt>H5 对照</dt><dd>H5 0x18[2] 管转换模式，Lina 写 0x8E 启用连续，0x13=0x01 配连续滤波；H6 0x18 未公开。</dd>
+    <dt>XENO 源码</dt><dd class="refs"><span>常规最终写 0x84 <a href="../Materials/GT_SS_XENO_APP_20260916/src/h6/h6_hal.c#L1353">h6/h6_hal.c:1353</a></span><span>无 Flash 初值时短暂 0x81，再写 0x80 <a href="../Materials/GT_SS_XENO_APP_20260916/src/h6/h6_hal.c#L1335">h6/h6_hal.c:1335</a></span><span>应用分槽写 0x14/0x84 <a href="../Materials/GT_SS_XENO_APP_20260916/src/demo/main.c#L493">demo/main.c:493</a></span></dd>
+    <dt>写错会怎样</dt><dd>过早开连续会使首批样本跨越增益或节拍改写；误开中断会复用 SDO；一直开 bit0 会持续以实时 ADC 更新初值。</dd></dl>
+  </div><span class="sr">必须写 / 我们要写 / 公开</span>
+</details><details class="card" id="reg-34" data-status="default" data-write="false">
+  <summary><span class="card-top"><span class="addr">0x34</span><strong>Test_Reg5</strong></span>
+  <span class="meta"><span class="badge b-default">默认即可</span><span>默认 <code>0x03</code></span><span>输出杂项</span></span>
+  <span class="metaphor">厂规指定的最后一个锁定档位。</span></summary>
+  <div class="card-body">
+    <dl><dt>位定义</dt><dd>整字节固定 0x03；子位未公开。 <a class="page" href="../Materials/GTRY164%20Magnetic%20Keyboard%20Sensor%20and%20LED%20Driver_V1.9_20261008%20%28Gtech%29.pdf#page=17">手册 p17</a></dd>
+    <dt>Lina 怎么配</dt><dd>保持上电 0x03，若此前有未知写入便先读回核对。</dd>
+    <dt>H5 对照</dt><dd>H5 有同名 Test_Reg5 在 0x21，期望 0x88；数字与地址不同，内部功能对应未证实。</dd>
+    <dt>XENO 源码</dt><dd class="refs"><span>仅见地址定义，未定位显式初始化写入 <a href="../Materials/GT_SS_XENO_APP_20260916/src/h6/h6_drv.h#L154">h6/h6_drv.h:154</a></span></dd>
+    <dt>写错会怎样</dt><dd>误写 0x88 会在固定值回读中失败；手册未描述进一步影响。</dd></dl>
+  </div><span class="sr">默认即可 / 公开</span>
+</details><details class="card" id="reg-35" data-status="default" data-write="false">
+  <summary><span class="card-top"><span class="addr">0x35</span><strong>SDO_Drive_Current</strong></span>
+  <span class="meta"><span class="badge b-default">默认即可</span><span>默认 <code>0x27</code></span><span>输出杂项</span></span>
+  <span class="metaphor">数据回线推信号的力度旋钮。</span></summary>
+  <div class="card-body">
+    <dl><dt>位定义</dt><dd>[7:4] 固定 0x2；[3] 固定 0；[2:0] 码 000/001/011/111 对应 2/4/8/12 mA。 <a class="page" href="../Materials/GTRY164%20Magnetic%20Keyboard%20Sensor%20and%20LED%20Driver_V1.9_20261008%20%28Gtech%29.pdf#page=17">手册 p17</a></dd>
+    <dt>Lina 怎么配</dt><dd>保持 0x27（12 mA），Lina 两颗均已实测回读。驱动调整要看回读稳定性与边沿、电平。</dd>
+    <dt>H5 对照</dt><dd>H5 在 0x1F[2:0]，Lina 写 0x07，即 12 mA；H6 高半字节固定 0x2。</dd>
+    <dt>XENO 源码</dt><dd class="refs"><span>仅见地址定义，未定位显式初始化写入 <a href="../Materials/GT_SS_XENO_APP_20260916/src/h6/h6_drv.h#L155">h6/h6_drv.h:155</a></span></dd>
+    <dt>写错会怎样</dt><dd>误抄 H5 的 0x07 会清掉固定高位；驱动太弱时重负载回线边沿变慢，可能出现寄存器回读错位或采样校验失败，需对照波形。</dd></dl>
+  </div><span class="sr">默认即可 / 公开</span>
+</details><details class="card" id="reg-3C" data-status="ro" data-write="false">
+  <summary><span class="card-top"><span class="addr">0x3C</span><strong>Baseline_Real-time_Value</strong></span>
+  <span class="meta"><span class="badge b-ro">只读</span><span>默认 <code>0x0000</code></span><span>基线</span></span>
+  <span class="metaphor">读出设备目前记下的松开参考点。</span></summary>
+  <div class="card-body">
+    <dl><dt>位定义</dt><dd>回读整个 16 位字，[13:0] 有效；[15:14] 不计入数值。 <a class="page" href="../Materials/GTRY164%20Magnetic%20Keyboard%20Sensor%20and%20LED%20Driver_V1.9_20261008%20%28Gtech%29.pdf#page=17">手册 p17</a></dd>
+    <dt>Lina 怎么配</dt><dd>首版只作观察，不写；硬件 TOP 基线对照时保留完整返回字，再取低 14 位。</dd>
+    <dt>H5 对照</dt><dd>H5 无对应公开读口，Lina MCU 的基线存在软件状态中。</dd>
+    <dt>XENO 源码</dt><dd class="refs"><span>定义 BASLINE，未定位使用该名的读事务 <a href="../Materials/GT_SS_XENO_APP_20260916/src/h6/h6_drv.h#L162">h6/h6_drv.h:162</a></span></dd>
+    <dt>写错会怎样</dt><dd>照普通寄存器只取低字节，会把 8192 等值显示成低 8 位结果，导致错误判断是否漂移。</dd></dl>
+  </div><span class="sr">只读 / 公开</span>
+</details></div></div><div class="group"><h3>未公开寄存器 · 8 项</h3><div class="cards"><details class="card" id="reg-13" data-status="hidden" data-write="false">
+  <summary><span class="card-top"><span class="addr">0x13</span><strong>CONGFIG_REG13</strong></span>
+  <span class="meta"><span class="badge b-hidden">未公开</span><span>默认 <code>未公开</code></span><span>输出杂项</span></span>
+  <span class="metaphor">参考工程在不同阶段用的隐藏档位。</span></summary>
+  <div class="card-body">
+    <dl><dt>位定义</dt><dd>GTRY164 V1.9 p13–17 未列此地址，默认值及各位语义待厂商确认。 <span class="page">公开表未列</span></dd>
+    <dt>Lina 怎么配</dt><dd>先省略。若公开配置下偏差校准或采样存在可复现问题，再基于芯片版本做单变量对照。</dd>
+    <dt>H5 对照</dt><dd>H5 同地址 0x13 是公开滤波配置，Lina 写 0x01；无证据表明 H6 同地址仍是滤波。</dd>
+    <dt>XENO 源码</dt><dd class="refs"><span>典型 0x7F <a href="../Materials/GT_SS_XENO_APP_20260916/src/h6/h6_hal.c#L1228">h6/h6_hal.c:1228</a></span><span>LP1 0x5F <a href="../Materials/GT_SS_XENO_APP_20260916/src/h6/h6_hal.c#L1245">h6/h6_hal.c:1245</a></span><span>LP2 0x7F <a href="../Materials/GT_SS_XENO_APP_20260916/src/h6/h6_hal.c#L1262">h6/h6_hal.c:1262</a></span><span>偏差校准写 0x7F <a href="../Materials/GT_SS_XENO_APP_20260916/src/h6/h6_offset_cali.c#L447">h6/h6_offset_cali.c:447</a></span><span>随后写 0x00 <a href="../Materials/GT_SS_XENO_APP_20260916/src/h6/h6_offset_cali.c#L454">h6/h6_offset_cali.c:454</a></span></dd>
+    <dt>写错会怎样</dt><dd>把 H5 的 0x01 照抄会进入未经文档验证的状态。若需要确认现象，应对比原始 ADC 零点、跨度、噪声和校准成功率。</dd></dl>
+  </div><span class="sr">未公开 / 未公开</span>
+</details><details class="card" id="reg-15" data-status="hidden" data-write="false">
+  <summary><span class="card-top"><span class="addr">0x15</span><strong>CONGFIG_REG15</strong></span>
+  <span class="meta"><span class="badge b-hidden">未公开</span><span>默认 <code>未公开</code></span><span>输出杂项</span></span>
+  <span class="metaphor">参考工程随运行档切换的隐藏开关。</span></summary>
+  <div class="card-body">
+    <dl><dt>位定义</dt><dd>GTRY164 V1.9 未公开默认值、位定义。 <span class="page">公开表未列</span></dd>
+    <dt>Lina 怎么配</dt><dd>先省略，待厂商说明或低功耗对照证明有必要。</dd>
+    <dt>H5 对照</dt><dd>H5 同地址 0x15 固定 0x44；H6 功能对应待确认。</dd>
+    <dt>XENO 源码</dt><dd class="refs"><span>典型 0x05 <a href="../Materials/GT_SS_XENO_APP_20260916/src/h6/h6_hal.c#L1229">h6/h6_hal.c:1229</a></span><span>LP1 0x85 <a href="../Materials/GT_SS_XENO_APP_20260916/src/h6/h6_hal.c#L1246">h6/h6_hal.c:1246</a></span><span>LP2 0x05 <a href="../Materials/GT_SS_XENO_APP_20260916/src/h6/h6_hal.c#L1263">h6/h6_hal.c:1263</a></span></dd>
+    <dt>写错会怎样</dt><dd>具体位效应待确认。若复用某档，比对静态电流、唤醒到首个有效 ADC 帧时间及原始码。</dd></dl>
+  </div><span class="sr">未公开 / 未公开</span>
+</details><details class="card" id="reg-16" data-status="hidden" data-write="false">
+  <summary><span class="card-top"><span class="addr">0x16</span><strong>CONGFIG_REG16</strong></span>
+  <span class="meta"><span class="badge b-hidden">未公开</span><span>默认 <code>未公开</code></span><span>输出杂项</span></span>
+  <span class="metaphor">随工作档一起更换的隐藏设定。</span></summary>
+  <div class="card-body">
+    <dl><dt>位定义</dt><dd>GTRY164 V1.9 未公开默认值、位定义。 <span class="page">公开表未列</span></dd>
+    <dt>Lina 怎么配</dt><dd>先省略。公开的 PGA 增益由 0x0B[3:0] 配。</dd>
+    <dt>H5 对照</dt><dd>H5 同地址 0x16 是 PGA，Lina 写 0x04=18.0×；H6 对应公开 PGA 在 0x0B。</dd>
+    <dt>XENO 源码</dt><dd class="refs"><span>典型 0x02 <a href="../Materials/GT_SS_XENO_APP_20260916/src/h6/h6_hal.c#L1230">h6/h6_hal.c:1230</a></span><span>LP1 0x01 <a href="../Materials/GT_SS_XENO_APP_20260916/src/h6/h6_hal.c#L1247">h6/h6_hal.c:1247</a></span><span>LP2 0x01 <a href="../Materials/GT_SS_XENO_APP_20260916/src/h6/h6_hal.c#L1264">h6/h6_hal.c:1264</a></span></dd>
+    <dt>写错会怎样</dt><dd>若用旧 H5 的 0x04 期望改成 18×，公开 PGA 回读仍无该改动；这个隐藏写的实际效果待确认。</dd></dl>
+  </div><span class="sr">未公开 / 未公开</span>
+</details><details class="card" id="reg-18" data-status="hidden" data-write="false">
+  <summary><span class="card-top"><span class="addr">0x18</span><strong>CONGFIG_REG18</strong></span>
+  <span class="meta"><span class="badge b-hidden">未公开</span><span>默认 <code>未公开</code></span><span>输出杂项</span></span>
+  <span class="metaphor">标签还没公开的一档工作设定。</span></summary>
+  <div class="card-body">
+    <dl><dt>位定义</dt><dd>GTRY164 V1.9 未公开默认值、位定义。 <span class="page">公开表未列</span></dd>
+    <dt>Lina 怎么配</dt><dd>先省略。连续转换通过公开的 0x33[7] 开启。</dd>
+    <dt>H5 对照</dt><dd>H5 同地址 0x18 是 ModeConfig0，Lina 写 0x8E；H6 模式入口移到 0x33，未知位不能复用。</dd>
+    <dt>XENO 源码</dt><dd class="refs"><span>典型 0x03 <a href="../Materials/GT_SS_XENO_APP_20260916/src/h6/h6_hal.c#L1231">h6/h6_hal.c:1231</a></span><span>LP1 0x03 <a href="../Materials/GT_SS_XENO_APP_20260916/src/h6/h6_hal.c#L1248">h6/h6_hal.c:1248</a></span><span>LP2 0x0D <a href="../Materials/GT_SS_XENO_APP_20260916/src/h6/h6_hal.c#L1265">h6/h6_hal.c:1265</a></span></dd>
+    <dt>写错会怎样</dt><dd>照搬 0x8E 时，0x33 未改仍保持单次模式；隐含副作用需对照采样和功耗。</dd></dl>
+  </div><span class="sr">未公开 / 未公开</span>
+</details><details class="card" id="reg-1C" data-status="hidden" data-write="false">
+  <summary><span class="card-top"><span class="addr">0x1C</span><strong>CONGFIG_REG1C</strong></span>
+  <span class="meta"><span class="badge b-hidden">未公开</span><span>默认 <code>未公开</code></span><span>输出杂项</span></span>
+  <span class="metaphor">参考工程切低功耗时调低的隐藏数字。</span></summary>
+  <div class="card-body">
+    <dl><dt>位定义</dt><dd>GTRY164 V1.9 未公开默认值、位定义。 <span class="page">公开表未列</span></dd>
+    <dt>Lina 怎么配</dt><dd>先省略，待芯片方确认。</dd>
+    <dt>H5 对照</dt><dd>H5 同地址 0x1C 是 LED4 电流，Lina 写 0xFF；H6 公开的 LED4 电流为 0x08。</dd>
+    <dt>XENO 源码</dt><dd class="refs"><span>典型 0xFF <a href="../Materials/GT_SS_XENO_APP_20260916/src/h6/h6_hal.c#L1232">h6/h6_hal.c:1232</a></span><span>LP1 0x7F <a href="../Materials/GT_SS_XENO_APP_20260916/src/h6/h6_hal.c#L1249">h6/h6_hal.c:1249</a></span><span>LP2 0x7F <a href="../Materials/GT_SS_XENO_APP_20260916/src/h6/h6_hal.c#L1266">h6/h6_hal.c:1266</a></span></dd>
+    <dt>写错会怎样</dt><dd>不能据 0xFF 相同推断它控制灯。差异若存在，需对照电流、原始码和采样连续性，当前无已知具体后果。</dd></dl>
+  </div><span class="sr">未公开 / 未公开</span>
+</details><details class="card" id="reg-1E" data-status="hidden" data-write="false">
+  <summary><span class="card-top"><span class="addr">0x1E</span><strong>CONGFIG_REG1E</strong></span>
+  <span class="meta"><span class="badge b-hidden">未公开</span><span>默认 <code>未公开</code></span><span>输出杂项</span></span>
+  <span class="metaphor">工作档不同就换数值的隐藏旋钮。</span></summary>
+  <div class="card-body">
+    <dl><dt>位定义</dt><dd>GTRY164 V1.9 未公开默认值、位定义。 <span class="page">公开表未列</span></dd>
+    <dt>Lina 怎么配</dt><dd>先省略；LED Imax 通过公开 0x09 配置，本板 LED 脚 NC。</dd>
+    <dt>H5 对照</dt><dd>H5 同地址 0x1E 是 LED3/4 的 Imax，Lina 写 0x88；H6 LED Imax 在 0x09。</dd>
+    <dt>XENO 源码</dt><dd class="refs"><span>典型 0x80 <a href="../Materials/GT_SS_XENO_APP_20260916/src/h6/h6_hal.c#L1233">h6/h6_hal.c:1233</a></span><span>LP1 0x80 <a href="../Materials/GT_SS_XENO_APP_20260916/src/h6/h6_hal.c#L1250">h6/h6_hal.c:1250</a></span><span>LP2 0x40 <a href="../Materials/GT_SS_XENO_APP_20260916/src/h6/h6_hal.c#L1267">h6/h6_hal.c:1267</a></span></dd>
+    <dt>写错会怎样</dt><dd>按 H5 算灯电流去写它不会设置公开的 Imax；隐藏效果待测，低功耗对照时记录电流和回读错误。</dd></dl>
+  </div><span class="sr">未公开 / 未公开</span>
+</details><details class="card" id="reg-20" data-status="hidden" data-write="false">
+  <summary><span class="card-top"><span class="addr">0x20</span><strong>CONGFIG_REG20</strong></span>
+  <span class="meta"><span class="badge b-hidden">未公开</span><span>默认 <code>未公开</code></span><span>输出杂项</span></span>
+  <span class="metaphor">参考工程联同其他隐藏档位切换的开关。</span></summary>
+  <div class="card-body">
+    <dl><dt>位定义</dt><dd>GTRY164 V1.9 未公开默认值、位定义。 <span class="page">公开表未列</span></dd>
+    <dt>Lina 怎么配</dt><dd>先省略；H6 休眠和唤醒按公开的 SCK 命令验证。</dd>
+    <dt>H5 对照</dt><dd>H5 同地址 0x20 是 DeepSleepEn，Lina 旧代码写 0x00；H6 不继承这一位定义。</dd>
+    <dt>XENO 源码</dt><dd class="refs"><span>典型 0x80 <a href="../Materials/GT_SS_XENO_APP_20260916/src/h6/h6_hal.c#L1234">h6/h6_hal.c:1234</a></span><span>LP1 0x80 <a href="../Materials/GT_SS_XENO_APP_20260916/src/h6/h6_hal.c#L1251">h6/h6_hal.c:1251</a></span><span>LP2 0x40 <a href="../Materials/GT_SS_XENO_APP_20260916/src/h6/h6_hal.c#L1268">h6/h6_hal.c:1268</a></span></dd>
+    <dt>写错会怎样</dt><dd>无法用写 0x00 判断 H6 深睡是否关闭。若试验这个地址，用睡眠电流和唤醒后的有效帧验证。</dd></dl>
+  </div><span class="sr">未公开 / 未公开</span>
+</details><details class="card" id="reg-25" data-status="hidden" data-write="false">
+  <summary><span class="card-top"><span class="addr">0x25</span><strong>CONGFIG_REG25</strong></span>
+  <span class="meta"><span class="badge b-hidden">未公开</span><span>默认 <code>未公开</code></span><span>输出杂项</span></span>
+  <span class="metaphor">参考工程各工作档分别采用的隐藏校正量。</span></summary>
+  <div class="card-body">
+    <dl><dt>位定义</dt><dd>GTRY164 V1.9 未公开默认值、位定义。 <span class="page">公开表未列</span></dd>
+    <dt>Lina 怎么配</dt><dd>先省略，若启动、漂移或功耗有重复问题，再请求文档与对照证据。</dd>
+    <dt>H5 对照</dt><dd>H5 无公开的 0x25 对应；H5 的温度补偿是 0x27，不能据此推定 H6 的 0x25。</dd>
+    <dt>XENO 源码</dt><dd class="refs"><span>典型 0x29 <a href="../Materials/GT_SS_XENO_APP_20260916/src/h6/h6_hal.c#L1235">h6/h6_hal.c:1235</a></span><span>LP1 0x28 <a href="../Materials/GT_SS_XENO_APP_20260916/src/h6/h6_hal.c#L1252">h6/h6_hal.c:1252</a></span><span>LP2 0x26 <a href="../Materials/GT_SS_XENO_APP_20260916/src/h6/h6_hal.c#L1269">h6/h6_hal.c:1269</a></span></dd>
+    <dt>写错会怎样</dt><dd>写错对应的具体影响待厂商确认；对照冷、热两组的松开原始码与功耗可以界定是否有关。</dd></dl>
+  </div><span class="sr">未公开 / 未公开</span>
+</details></div></div></section>
+<section id="mapping" aria-labelledby="map-heading"><h2 id="map-heading">按功能看 H5 → H6</h2>
+<p>H5 的地址、增益档与固定值不能直接移植。H6 没有 64× LNA，用完整按压行程的有效码跨度和噪声来选档。H5 的采样间隔还含 +80 µs 和独立的粗间隔。</p><div class="scroll"><table><thead><tr><th scope="col">功能</th><th scope="col">Lina H5</th><th scope="col">H6</th></tr></thead><tbody><tr><th scope="row">模拟增益</th><td>0x14=0x35（64× LNA），0x16=0x04（18× PGA）</td><td>0x09[5] + 0x0B + 0x29/0x2A。H6 支持 16/24/48/96×，按整组设置。</td></tr><tr><th scope="row">采样节拍</th><td>0x0A=0x0B、0x0B=0x00，11×4+80=124 µs，粗调另加毫秒</td><td>0x0F/0x10 拼成 N，T=4N µs，N=31 对应 124 µs。</td></tr><tr><th scope="row">转换和滤波</th><td>0x18=0x8E 开连续，0x13=0x01 配连续滤波</td><td>0x33[7] 开连续，切换后等 50 µs。H6 0x13 的位义未公开。</td></tr><tr><th scope="row">SPS 和按键方向</th><td>0x18[0] 控制 SPS，0x0E 超时，0x0F/0x10 松开阈值与极性</td><td>0x32、0x11/0x12、0x2B/0x2C。中断模式另用 0x1B/0x33。</td></tr><tr><th scope="row">基线与触发</th><td>Lina MCU 软件维护 TOP、底部基线和 Rapid Trigger</td><td>H6 提供硬件 TOP 跟踪和 0x3C 读口；首版仍由 MCU 管理。</td></tr><tr><th scope="row">固定字节</th><td>例如 0x0C=0xB5、0x11=0x00、0x12=0x47、0x21=0x88</td><td>0x0C 必须写 0x83；0x26–0x28/0x2F/0x34 默认已符合对应固定值。</td></tr><tr><th scope="row">LED 与 SDO</th><td>LED 0x19–0x1E；0x1F=0x07，SDO 12 mA</td><td>LED 0x05–0x09；SDO 改为 0x35=0x27，同为 12 mA，另有固定高位。</td></tr></tbody></table></div>
+<p class="muted">Lina H5 的配表、原始数据方向和 MCU 基线实现。 <a href="../app/button.c#L232">app/button.c:232–293</a> · <a href="../inc/my_misc.h#L39">inc/my_misc.h:39–43</a> · <a href="../src/my_misc.c#L530">src/my_misc.c:530–550</a></p></section>
+<section id="sequence" aria-labelledby="sequence-heading"><h2 id="sequence-heading">九项写入顺序</h2>
+<p>应用于两颗 H6 的首轮建议。在现有校频通过后执行。先前的 0x35 读回和 0x07 写入恢复证明了通信链路，这套产品值仍要上板验收。</p>
+<ol class="timeline"><li><div><h3><a href="#reg-0C">0x0C</a> → <span class="value">0x83</span> ｜ 工作固定值</h3><p>GTRY164 p14 要求 0x83，上电值为 0xAA。</p></div></li><li><div><h3><a href="#reg-09">0x09</a> → <span class="value">0x20</span> ｜ 选 LNA 档组</h3><p>bit5=1、LED 电流上限为 0，先给 0x0B 的选择建立前提。</p></div></li><li><div><h3><a href="#reg-0B">0x0B</a> → <span class="value">0x88</span> ｜ 选增益</h3><p>首测 24× / 22.8×。按下、松开和触底均要记录原始码。</p></div></li><li><div><h3><a href="#reg-29">0x29</a> → <span class="value">0x60</span> ｜ 配套校正一</h3><p>按 0x0B 的 LNA 选择，24× 的手册值为 0x60。</p></div></li><li><div><h3><a href="#reg-2A">0x2A</a> → <span class="value">0x28</span> ｜ 配套校正二</h3><p>24× 的第二字节为 0x28，把三个增益寄存器当一组验收。</p></div></li><li><div><h3><a href="#reg-0F">0x0F</a> → <span class="value">0x1F</span> ｜ 设周期低位</h3><p>与 0x10 配出 124 µs。对照 28 µs 时把此项改成 0x07。</p></div></li><li><div><h3><a href="#reg-10">0x10</a> → <span class="value">0x20</span> ｜ 设高位和固定值</h3><p>[7:4]=2，[3:0]=0。回读后用 12 位拼接算一次。</p></div></li><li><div><h3><a href="#reg-32">0x32</a> → <span class="value">0x01</span> ｜ 设方向假设</h3><p>按下码下降、SPS 关。H6 两键真实方向要按压确认。</p></div></li><li><div><h3><a href="#reg-33">0x33</a> → <span class="value">0x80</span> ｜ 启动连续转换</h3><p>保持轮询和 MCU 基线。从写入切换起至少等 50 µs 再读转换数据。</p></div></li></ol>
+<div class="callout"><p><strong>0x33 最后</strong>　这一笔会启动连续转换。提前写时，芯片可能在旧增益、旧节拍和旧方向下完成第一批转换。等配置稳定再开转换，并按 p17 等至少 50 µs 再读 ADC。</p></div></section>
+<section id="choices" aria-labelledby="choices-heading"><h2 id="choices-heading">四个上板决策</h2><div class="decisions"><article class="decision"><h3>硬件 TOP baseline 开不开</h3><p><strong>首测建议</strong>　先关，0x33=0x80。保留 Lina MCU 的顶、底基线和 Rapid Trigger 作为对照。</p><p>先观察 H6 原始码，避免把增益、方向和基线跟踪叠进一次调试。</p><p><strong>改选条件</strong>　温漂或长时间松开导致软件基线难以稳定时，再对照 0x84。比较 0x3C、松开漂移和误触发，并确认按压或持续按住时初值没有被带偏。</p></article><article class="decision"><h3>28 µs 还是 124 µs</h3><p><strong>首测建议</strong>　先取 124 µs，0x0F=0x1F、0x10=0x20。</p><p>Lina H5 用 124 µs，能减少迁移时的变量。芯片采样周期与 MCU 读回频率是两件事。</p><p><strong>改选条件</strong>　若快速按压时原始码更新滞后，切到 28 µs 的对照组。只有触发延迟改善且功耗、噪声和错误率可接受才转档。</p></article><article class="decision"><h3>0x88 还是 0x99</h3><p><strong>首测建议</strong>　先取 0x88，24× LNA / 22.8× PGA，配 0x60/0x28。</p><p>XENO 也以 0x88 作 Flash 回退。较低增益给两颗磁铁的装配差异和触底留余量。</p><p><strong>改选条件</strong>　若完整行程净跨度偏小、轻按变化与松开噪声难区分，且上下端均未贴边，再对照 0x99 配 0xA0/0x40。原始码已饱和则应降低增益。</p></article><article class="decision"><h3>8 个未公开寄存器用不用</h3><p><strong>首测建议</strong>　首版省略这 8 个。</p><p>XENO 在不同工作档和校准阶段使用不同的值。仅有写入值不能确认位义和适用芯片版本。</p><p><strong>改选条件</strong>　用公开配置仍可复现偏置过大、冷启动失败或低功耗唤醒问题时，先向芯片方确认寄存器和版本，再做单变量试验，保存原始码、功耗和错误率。</p></article></div></section>
+<section id="readback" aria-labelledby="readback-heading"><h2 id="readback-heading">写后读回清单</h2>
+<p>在寄存器读事务里，普通配置取每颗返回字的低 8 位。读动态 TOP 基线 0x3C 时则取低 14 位。逐颗核对，冷启动重新应用配置后再复测一次。</p>
+<div class="scroll"><table><thead><tr><th scope="col">寄存器</th><th scope="col">右侧期望</th><th scope="col">左侧期望</th><th scope="col">完成</th></tr></thead><tbody><tr><th scope="row"><a href="#reg-0C">0x0C</a> 工作固定值</th><td><code>0x83</code></td><td><code>0x83</code></td><td><input type="checkbox" class="check" aria-label="已核对两颗 0x0C"></td></tr><tr><th scope="row"><a href="#reg-09">0x09</a> 选 LNA 档组</th><td><code>0x20</code></td><td><code>0x20</code></td><td><input type="checkbox" class="check" aria-label="已核对两颗 0x09"></td></tr><tr><th scope="row"><a href="#reg-0B">0x0B</a> 选增益</th><td><code>0x88</code></td><td><code>0x88</code></td><td><input type="checkbox" class="check" aria-label="已核对两颗 0x0B"></td></tr><tr><th scope="row"><a href="#reg-29">0x29</a> 配套校正一</th><td><code>0x60</code></td><td><code>0x60</code></td><td><input type="checkbox" class="check" aria-label="已核对两颗 0x29"></td></tr><tr><th scope="row"><a href="#reg-2A">0x2A</a> 配套校正二</th><td><code>0x28</code></td><td><code>0x28</code></td><td><input type="checkbox" class="check" aria-label="已核对两颗 0x2A"></td></tr><tr><th scope="row"><a href="#reg-0F">0x0F</a> 设周期低位</th><td><code>0x1F</code></td><td><code>0x1F</code></td><td><input type="checkbox" class="check" aria-label="已核对两颗 0x0F"></td></tr><tr><th scope="row"><a href="#reg-10">0x10</a> 设高位和固定值</th><td><code>0x20</code></td><td><code>0x20</code></td><td><input type="checkbox" class="check" aria-label="已核对两颗 0x10"></td></tr><tr><th scope="row"><a href="#reg-32">0x32</a> 设方向假设</th><td><code>0x01</code></td><td><code>0x01</code></td><td><input type="checkbox" class="check" aria-label="已核对两颗 0x32"></td></tr><tr><th scope="row"><a href="#reg-33">0x33</a> 启动连续转换</th><td><code>0x80</code></td><td><code>0x80</code></td><td><input type="checkbox" class="check" aria-label="已核对两颗 0x33"></td></tr></tbody></table></div><div class="scroll"><table><thead><tr><th scope="col">核对项</th><th scope="col">期望与证据</th><th scope="col">完成</th></tr></thead><tbody><tr><th scope="row">放大与节拍</th><td>确认 0x09 bit5=1、增益组 88/60/28。拼出 N=31，采样间隔为 124 µs。若测试 28 µs，改 0x0F 为 0x07。</td><td><input type="checkbox" class="check" aria-label="已核对放大与节拍"></td></tr><tr><th scope="row">启动与方向</th><td>0x33=0x80，等至少 50 µs 再读取。分别从松开压到触底，记录两键方向、跨度、静止噪声和饱和点。</td><td><input type="checkbox" class="check" aria-label="已核对启动与方向"></td></tr><tr><th scope="row">链路对照</th><td>0x35 两颗均应读到 0x27，0x07 的台架测试结束时恢复 0x00。若全 00 或 FF，先看这两项、MOSI/MISO 和 td6 波形。</td><td><input type="checkbox" class="check" aria-label="已核对链路对照"></td></tr><tr><th scope="row">可选硬件基线</th><td>仅做 0x84 对照时记录 0x3C 的动态值。保留完整回读字并取低 14 位。</td><td><input type="checkbox" class="check" aria-label="已核对可选硬件基线"></td></tr></tbody></table></div><p class="hint" id="check-count" role="status" aria-live="polite"></p></section>
+<section id="errors" aria-labelledby="errors-heading"><h2 id="errors-heading">常见错误</h2><ul class="errors"><li><strong>0x09 bit5 被清零</strong>。只看 LED_IMAX 名称，把寄存器清成 0x00。若 0x0B=0x88，LNA 由 24× 变成 16×；若用 0x99，组合落入保留。</li><li><strong>只改 0x0B</strong>。旧的 0x29/0x2A 会与新 LNA 档失配。读回三项并比较相同行程的跨度和静止噪声。</li><li><strong>0x33 提前写</strong>。连续转换会在模拟参数逐项修改时开始。先配置其余 8 项，最后切模式并等 50 µs，再验首帧。</li><li><strong>按 H5 地址抄配置</strong>。H5 的 0x0B 是粗间隔，H6 是增益；H5 的 0x1B 是 LED3 电流，H6 是空闲门槛；H5 的 0x18 在 H6 表中未公开。</li><li><strong>把 B 的十六进制值当时间</strong>。H5 0x0A=0x0B 的周期是 124 µs；H6 用 N×4 µs，直接抄 0x0B 只得到 44 µs。</li><li><strong>把寄存器 CRC 套到采样帧</strong>。H6 写寄存器 bit14 是 6 位地址与 8 位数据的异或。采样帧是两位奇偶校验加 14 位数据，0x3C 又是寄存器读回的低 14 位特例。</li><li><strong>照抄 0x84 或 0x4F</strong>。0x84 同时开启硬件基线。0x4F 在 XENO 校准恢复路径出现，0x32 的 V1.9 固定低位应为 0x1。</li><li><strong>把两个相同回读当作左右已确认</strong>。两个 0x35 都是 0x27 只能验证读链。0x07 的互异值回读已验证段映射，物理左右由分别按压采样确认。</li></ul></section>
+</main>
+<footer><div class="wrap"><h2>原始资料</h2><ul>
+<li><a href="../Materials/GTRY164%20Magnetic%20Keyboard%20Sensor%20and%20LED%20Driver_V1.9_20261008%20%28Gtech%29.pdf#page=13">GTRY164 V1.9 p13–17</a> · 公开寄存器、默认值、位定义。</li>
+<li><a href="../Materials/GTRY154%20Magnetic%20Keyboard%20Sensor%20and%20LED%20Driver_V1.1_20240719%20%28For%20Corsiar%29.pdf#page=11">GTRY154 V1.1</a> · H5 寄存器与公式。 <a href="../Materials/GT_Lina%20T1A%20hall%20haptic_G2_V0.1%282%29.pdf#page=1">GT_Lina 原理图</a> · H1/H2、时钟和 PWM 接线。</li>
+<li><a href="../Materials/GT_SS_XENO_APP_20260916/src/h6/h6_hal.c#L1221">XENO h6_hal.c:1221 起</a> · 卡片指向写入、模式或仅有地址定义的证据。LP1/LP2 指源码中的低功耗配置定义，不代表普通键的启动值。原始附件的链接需保留项目目录结构。</li>
+</ul></div></footer>
+<script>
+"use strict";
+const search = document.querySelector("#register-search");
+const cards = [...document.querySelectorAll(".card")];
+const corpus = cards.map(c => c.textContent.normalize("NFKC").toLowerCase());
+const filters = [...document.querySelectorAll("[data-filter]")];
+const resultCount = document.querySelector("#result-count");
+let active = "all";
+function applyFilters() {
+  const terms = search.value.normalize("NFKC").toLowerCase().trim().split(/\s+/).filter(Boolean);
+  for (const [i,c] of cards.entries()) {
+    const matchesStatus = active === "all" || (active === "write" ? c.dataset.write === "true" : c.dataset.status === active);
+    c.hidden = !matchesStatus || !terms.every(term => corpus[i].includes(term));
+  }
+  for (const g of document.querySelectorAll(".group")) g.hidden = !g.querySelector(".card:not([hidden])");
+  const shown = cards.filter(c => !c.hidden).length;
+  resultCount.textContent = shown ? `显示 ${shown} / ${cards.length} 项` : "没有匹配项。可清空搜索或换一个状态。";
+  document.querySelector("#expand").disabled = !shown;
+  for (const button of filters) button.setAttribute("aria-pressed", String(button.dataset.filter === active));
+}
+search.addEventListener("input", applyFilters);
+for (const button of filters) button.addEventListener("click", () => {
+  active = button.dataset.filter;
+  applyFilters();
+});
+document.querySelector("#clear").addEventListener("click", () => {
+  search.value = "";
+  active = "all";
+  applyFilters();
+  search.focus();
+});
+document.querySelector("#expand").addEventListener("click", () => {
+  const shown = cards.filter(c => !c.hidden);
+  const open = shown.some(c => !c.open);
+  for (const c of shown) c.open = open;
+});
+function revealHash() {
+  const id = location.hash.slice(1);
+  if (!/^reg-[0-9A-F]{2}$/.test(id)) return;
+  const card = document.getElementById(id);
+  if (!card) return;
+  if (card.hidden) {
+    active = "all";
+    search.value = "";
+    applyFilters();
+  }
+  card.open = true;
+  card.scrollIntoView({block:"start"});
+}
+window.addEventListener("hashchange", revealHash);
+document.addEventListener("click", e => {
+  const link = e.target.closest('a[href^="#reg-"]');
+  if (link && link.hash === location.hash) revealHash();
+});
+const checks = [...document.querySelectorAll(".check")];
+function updateChecks() {
+  document.querySelector("#check-count").textContent = `已核对 ${checks.filter(c => c.checked).length} / ${checks.length} 项`;
+}
+for (const check of checks) check.addEventListener("change", updateChecks);
+applyFilters();
+updateChecks();
+revealHash();
+</script></body></html>

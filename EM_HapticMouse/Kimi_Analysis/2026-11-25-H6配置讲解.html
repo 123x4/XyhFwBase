@@ -1,0 +1,213 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>GTRY164 配置讲解 · Lina T1A H6</title>
+<style>
+:root{--bg:#07111f;--panel:#0d1a2d;--panel2:#10233b;--line:#26415f;--text:#e8f1fb;--muted:#9eb0c5;--blue:#63b3ff;--cyan:#5eead4;--green:#7ddc8b;--amber:#fbbf24;--red:#fb7185;--violet:#c4b5fd;--shadow:0 18px 50px rgba(0,0,0,.35)}
+*{box-sizing:border-box}html{scroll-behavior:smooth}body{margin:0;background:radial-gradient(circle at 15% 0,#14345c 0,transparent 34rem),radial-gradient(circle at 90% 15%,#173b43 0,transparent 30rem),var(--bg);color:var(--text);font:15px/1.72 -apple-system,BlinkMacSystemFont,"Segoe UI","Microsoft YaHei",Arial,sans-serif}a{color:var(--cyan);text-decoration:none}a:hover{text-decoration:underline}.wrap{max-width:1240px;margin:auto;padding:28px 20px 70px}.hero{padding:42px 0 26px;border-bottom:1px solid var(--line)}.eyebrow{color:var(--cyan);font-weight:700;letter-spacing:.12em}.hero h1{font-size:clamp(30px,5vw,54px);line-height:1.12;margin:8px 0 14px}.hero p{max-width:940px;color:var(--muted);font-size:17px}.badges,.chips{display:flex;flex-wrap:wrap;gap:8px}.badge,.chip{display:inline-flex;align-items:center;border:1px solid var(--line);border-radius:999px;padding:4px 10px;background:rgba(255,255,255,.04);color:#c8d7e8;font-size:12px;font-weight:700}.badge.hot{border-color:#6b3d1f;color:#ffd29a;background:#3a2114}.nav{position:sticky;top:0;z-index:20;display:flex;gap:8px;overflow:auto;padding:10px 0;background:rgba(7,17,31,.92);backdrop-filter:blur(10px);border-bottom:1px solid var(--line)}.nav a{white-space:nowrap;border:1px solid var(--line);border-radius:999px;padding:7px 12px;color:var(--text);background:#0b1728}.nav a:hover{border-color:var(--blue);text-decoration:none}.section{margin-top:36px}.section h2{font-size:28px;margin:0 0 14px}.section h3{font-size:20px;margin:28px 0 10px}.lead{color:var(--muted);max-width:980px}.panel{background:linear-gradient(180deg,rgba(16,35,59,.92),rgba(11,24,42,.92));border:1px solid var(--line);border-radius:18px;box-shadow:var(--shadow);padding:20px}.grid{display:grid;gap:14px}.grid.five{grid-template-columns:repeat(auto-fit,minmax(190px,1fr))}.grid.two{grid-template-columns:repeat(auto-fit,minmax(330px,1fr))}.flowcard{border:1px solid var(--line);border-radius:15px;padding:15px;background:#0b182b}.flowcard b{color:var(--blue);display:block;margin-bottom:5px}.flowcard span{color:var(--muted)}.notice{border-left:4px solid var(--amber);background:#2a2111;padding:12px 14px;border-radius:10px;color:#ffe7b3}.tablewrap{overflow:auto;border:1px solid var(--line);border-radius:14px}table{width:100%;border-collapse:collapse;min-width:760px;background:#0b1728}th,td{padding:10px 12px;border-bottom:1px solid #1c3048;text-align:left;vertical-align:top}th{position:sticky;top:0;background:#13253c;color:#dcecff;z-index:2}td{color:#c6d4e5}tr:hover td{background:#101f33}.mono,code{font-family:"SFMono-Regular",Consolas,"Liberation Mono",monospace;color:#a5f3fc}.controls{display:grid;grid-template-columns:minmax(220px,1fr) minmax(190px,240px) auto auto;gap:10px;margin:16px 0}.controls input,.controls select,.calc input,.calc select{width:100%;border:1px solid var(--line);border-radius:12px;background:#091627;color:var(--text);padding:11px 12px;outline:none}.controls input:focus,.controls select:focus,.calc input:focus,.calc select:focus{border-color:var(--blue);box-shadow:0 0 0 3px rgba(99,179,255,.12)}button{border:1px solid var(--line);border-radius:12px;background:#142a44;color:var(--text);padding:10px 14px;font-weight:700;cursor:pointer}button:hover{border-color:var(--blue);background:#183553}.status-write{--sc:#63b3ff}.status-test{--sc:#fbbf24}.status-default{--sc:#7ddc8b}.status-na{--sc:#94a3b8}.status-gain{--sc:#c4b5fd}.status-readonly{--sc:#5eead4}.status-undoc{--sc:#fb7185}.reg-group{margin-top:18px}.reg-group>h3{display:flex;align-items:center;gap:10px;color:#e5f2ff}.reg-group>h3:before{content:"";width:8px;height:24px;border-radius:4px;background:var(--blue)}.reg-card{margin:10px 0;border:1px solid var(--line);border-radius:16px;background:linear-gradient(180deg,#101f34,#0c192b);box-shadow:0 10px 26px rgba(0,0,0,.22);overflow:hidden}.reg-card[open]{border-color:color-mix(in srgb,var(--sc) 65%,var(--line))}.reg-card summary{list-style:none;cursor:pointer;padding:15px 17px}.reg-card summary::-webkit-details-marker{display:none}.summary-row{display:grid;grid-template-columns:78px minmax(180px,1fr) auto;gap:12px;align-items:center}.addr{font:800 18px Consolas,monospace;color:var(--cyan)}.reg-name{font-weight:800;font-size:17px}.reg-meta{color:var(--muted);font-size:13px}.pill{border:1px solid color-mix(in srgb,var(--sc) 65%,transparent);background:color-mix(in srgb,var(--sc) 13%,transparent);color:var(--sc);border-radius:999px;padding:4px 9px;font-size:12px;font-weight:800;white-space:nowrap}.card-body{border-top:1px solid #1d324c;padding:16px 17px;display:grid;gap:12px}.field{display:grid;grid-template-columns:108px 1fr;gap:12px}.field b{color:#8fb6dc}.field div{color:#d6e4f3}.analogy{border-left:3px solid var(--cyan);background:#0c2a31;padding:10px 12px;border-radius:8px}.wrong{border-left:3px solid var(--red);background:#311923;padding:10px 12px;border-radius:8px}.sourcebox{font-size:12px;color:var(--muted)}.calc{min-height:100%}.calc h3{margin-top:0}.calc label{display:block;margin:10px 0 4px;color:var(--muted)}.calc-result{margin-top:13px;border:1px solid #25516c;background:#0b2234;border-radius:12px;padding:12px;color:#cdefff}.warnline{margin-top:8px;color:#ffd29a}.timeline{counter-reset:step;display:grid;gap:10px}.step{position:relative;padding:13px 13px 13px 58px;border:1px solid var(--line);border-radius:14px;background:#0c1a2d}.step:before{counter-increment:step;content:counter(step);position:absolute;left:14px;top:14px;width:30px;height:30px;border-radius:50%;display:grid;place-items:center;background:#123c66;color:#9bdcff;font-weight:900}.decision{border-left:4px solid var(--violet)}.decision .answer{font-size:18px;color:#e9d5ff;font-weight:900}.errorlist li{margin:9px 0}.footer{margin-top:38px;border-top:1px solid var(--line);padding-top:18px;color:var(--muted)}.hidden{display:none!important}@media(max-width:760px){.controls{grid-template-columns:1fr}.summary-row{grid-template-columns:70px 1fr}.summary-row .pill{grid-column:2;justify-self:start}.field{grid-template-columns:1fr;gap:2px}.hero{padding-top:26px}}@media print{body{background:#fff;color:#111}.nav,.controls,button{display:none}.panel,.reg-card,.flowcard,.tablewrap{box-shadow:none;background:#fff;color:#111}td,th,.field div,.lead,.reg-meta{color:#111}a{color:#0645ad}.reg-card{display:block}}
+</style>
+</head>
+<body>
+<div class="wrap">
+<header class="hero">
+  <div class="eyebrow">LINA T1A · GTRY154 → GTRY164 · 独立教学版</div>
+  <h1>GTRY164 配置讲解</h1>
+  <p>这不是手册翻译。每个寄存器都回答同一件事：它像什么、默认值是不是陷阱、Lina 该不该改、H5 原来怎么做、XENO 怎么做，以及写错后会在哪里露馅。</p>
+  <div class="badges">
+    <span class="badge hot">29 个公开项（题目地址清单实际为 29，不是 30）</span>
+    <span class="badge">8 个 XENO 未公开项</span>
+    <span class="badge">单文件 · 离线 · 无 CDN</span>
+    <span class="badge">2026-11-25 · Kimi</span>
+  </div>
+</header>
+<nav class="nav">
+  <a href="#pipeline">流水线导读</a><a href="#traps">默认值陷阱</a><a href="#tools">交互计算</a><a href="#registers">37 项寄存器</a><a href="#mapping">H5→H6 映射</a><a href="#timeline">9 项写入</a><a href="#decisions">四个决策</a><a href="#verify">读回清单</a><a href="#errors">常见错误</a>
+</nav>
+
+<section id="pipeline" class="section">
+  <h2>1. 从磁铁到数字：先记住五个岗位</h2>
+  <p class="lead">H6 像一条小工厂：模拟信号先被两级放大镜放大，再按固定节拍送上流水线。随后可以交给芯片自己的判卷规则，也可以交给 MCU 的 Rapid Trigger。基线负责记住“松手零点”，输出杂项负责灯和 SDO。</p>
+  <div class="grid five">
+    <div class="flowcard"><b>模拟前端</b><span>0x09、0x0B、0x29、0x2A：决定放大镜倍数，三项必须同步。</span></div>
+    <div class="flowcard"><b>采样节拍</b><span>0x0F、0x10 是主节拍；0x11、0x12、0x1B 服务 SPS/中断。</span></div>
+    <div class="flowcard"><b>按键判定</b><span>0x2B、0x2C、0x32 是芯片内部判卷规则；Lina 首版仍由 MCU 判。</span></div>
+    <div class="flowcard"><b>基线</b><span>0x2D–0x31、0x33 bit2/0、0x3C 管理芯片 top baseline。</span></div>
+    <div class="flowcard"><b>输出杂项</b><span>0x05–0x09 的 LED 部分、0x35，以及所有固定值标签。</span></div>
+  </div>
+</section>
+
+<section id="traps" class="section">
+  <h2>2. 默认值陷阱：哪些“看起来对了”其实没对</h2>
+  <div class="notice">最大的陷阱不是复杂寄存器，而是 <b>默认值与“规定要写的固定值”不同</b>。0x0C 上电是 0xAA，但手册要求 0x83；0x0B 默认 0x15 的高半字节不是有效 LNA 档；0x29/0x2A 默认也不是 48× 配套值。</div>
+  <div class="tablewrap" style="margin-top:14px"><table><thead><tr><th>项</th><th>上电默认</th><th>Lina 首版</th><th>判断</th></tr></thead><tbody>
+    <tr><td class="mono">0x0C</td><td class="mono">0xAA</td><td class="mono">0x83</td><td>必须写，默认值就是错误值。</td></tr>
+    <tr><td class="mono">0x09</td><td class="mono">0x20</td><td class="mono">0x20</td><td>写与不写电气等价，但显式写可防止 bit5 被清。</td></tr>
+    <tr><td class="mono">0x0B</td><td class="mono">0x15</td><td class="mono">0x99</td><td>默认高半字节 0x1 是保留组合。</td></tr>
+    <tr><td class="mono">0x29/0x2A</td><td class="mono">0x40/0x32</td><td class="mono">0xA0/0x40</td><td>必须随 48× 档位同步。</td></tr>
+    <tr><td class="mono">0x0F/0x10</td><td class="mono">0x20/0x20</td><td class="mono">0x1F/0x20</td><td>默认 128 µs，接近但不是 124 µs。</td></tr>
+    <tr><td class="mono">0x33</td><td class="mono">0x00</td><td class="mono">0x80</td><td>默认单次转换，必须最后开启连续转换。</td></tr>
+    <tr><td class="mono">0x26/27/28/2F/34/35</td><td class="mono">0A/05/04/14/03/27</td><td>同默认</td><td>默认已正确，写相同值与不写等价。</td></tr>
+  </tbody></table></div>
+</section>
+
+<section id="tools" class="section">
+  <h2>3. 动手算一算</h2>
+  <div class="grid two">
+    <div class="panel calc">
+      <h3>增益档位计算器</h3>
+      <label>0x0B 候选</label><select id="gainSel"><option value="0x99" selected>0x99（高半字节 9，PGA 24.0×）</option><option value="0x88">0x88（高半字节 8，PGA 22.8×）</option></select>
+      <label><input id="bit5" type="checkbox" checked style="width:auto;margin-right:7px"> 0x09 bit5 = 1</label>
+      <div class="calc-result" id="gainOut"></div>
+    </div>
+    <div class="panel calc">
+      <h3>采样间隔计算器</h3>
+      <label>0x0F（低 8 位，十六进制）</label><input id="regF" value="1F" maxlength="2">
+      <label>0x10（高 4 位 + 固定 0x2，十六进制）</label><input id="reg10" value="20" maxlength="2">
+      <div style="display:flex;gap:8px;margin-top:10px"><button id="set124">填 124 µs</button><button id="set28">填 XENO 28 µs</button></div>
+      <div class="calc-result" id="sampleOut"></div>
+    </div>
+  </div>
+</section>
+
+<section id="registers" class="section">
+  <h2>4. 37 项寄存器卡片</h2>
+  <p class="lead">点击卡片展开位定义、Lina/H5/XENO 对照和写错后果。状态筛选中的“我们要写”包含 9 项时间线；“随增益联动”是其中的 0x29/0x2A。</p>
+  <div class="controls">
+    <input id="search" type="search" placeholder="搜索地址、名称、功能、H5、XENO……">
+    <select id="status"><option value="all">全部状态</option><option value="write">我们要写</option><option value="test">待实测</option><option value="gain">随增益联动</option><option value="default">默认即可</option><option value="na">不适用</option><option value="undoc">未公开</option><option value="readonly">只读</option></select>
+    <button id="expand">全部展开</button><button id="collapse">全部收起</button>
+  </div>
+  <div class="sourcebox">可见 <b id="shown">37</b> / <b id="total">37</b> 项 · XENO 路径别名在页面底部给出。</div>
+  <div id="cards"></div>
+</section>
+
+<section id="mapping" class="section">
+  <h2>5. H5 → H6 功能映射：按功能，不按地址</h2>
+  <div class="tablewrap"><table><thead><tr><th>功能</th><th>Lina H5</th><th>Lina H6 首版</th><th>为什么不能照抄</th></tr></thead><tbody>
+    <tr><td>采样间隔</td><td class="mono">0x0A=0x0B，11×4+80=124 µs</td><td class="mono">0x0F=0x1F，0x10=0x20，31×4=124 µs</td><td>H5 是 fine+80 和 ms 粗调；H6 是 12 位总数乘 4 µs。</td></tr>
+    <tr><td>LNA</td><td class="mono">0x14=0x35，64×</td><td class="mono">0x09=0x20 + 0x0B=0x99，48×</td><td>H6 没有 64×；48× 同时要求 0x09 bit5=1。</td></tr>
+    <tr><td>PGA</td><td class="mono">0x16=0x04，18×</td><td class="mono">0x0B[3:0]=0x9，24×</td><td>48× × 24× = 64× × 18× = 1152×。</td></tr>
+    <tr><td>联动 trim</td><td>无公开对应</td><td class="mono">0x29=0xA0，0x2A=0x40</td><td>三者必须作为一组换，不能只改 0x0B。</td></tr>
+    <tr><td>固定值</td><td class="mono">0C=B5,0D=02,11=00,12=47,15=44,17=7C,21=88</td><td class="mono">0C=83,26=0A,27=05,28=04,2F=14,34=03</td><td>同地址不代表同功能；H5 0x27 是温度补偿，H6 0x27 是固定 0x05。</td></tr>
+    <tr><td>连续/SPS</td><td class="mono">0x18=0x8E</td><td class="mono">0x33=0x80</td><td>H6 的模式位还包含中断、链首和 baseline。</td></tr>
+    <tr><td>按键方向</td><td>原始值按下下降，MCU 反相</td><td class="mono">0x32=0x41 候选，待实测</td><td>H6 有 bit7 输入极性和 bit6 判定方向两个层次。</td></tr>
+    <tr><td>基线</td><td>MCU 做 top/bottom 双基线</td><td>芯片 baseline 首版关闭</td><td>H6 只支持 top baseline，不能直接替代现有双基线。</td></tr>
+    <tr><td>LED</td><td class="mono">0x19–0x1C=0xFF，0x1D/1E=0x88</td><td class="mono">0x05–0x08=0x00，0x09=0x20</td><td>H6 地址整体前移，Lina 的 H6 PWM 引脚也未接 LED。</td></tr>
+    <tr><td>SDO</td><td class="mono">0x1F[2:0]=0x7，12 mA</td><td class="mono">0x35[2:0]=0x0，2 mA</td><td>地址、固定高半字节和推荐电流都改变。</td></tr>
+    <tr><td>深睡/温补</td><td class="mono">0x20=0x00，0x27=0x00</td><td>无公开对应</td><td>H6 0x20 未公开，H6 0x27 是固定值。</td></tr>
+  </tbody></table></div>
+</section>
+
+<section id="timeline" class="section">
+  <h2>6. 推荐写入的 9 项：顺序时间线</h2>
+  <div class="timeline">
+    <div class="step"><b class="mono">0x0C = 0x83</b><br>先纠正默认 0xAA 的固定标签。</div>
+    <div class="step"><b class="mono">0x09 = 0x20</b><br>保住 bit5；LED 倍率和 Imax 保持 0。</div>
+    <div class="step"><b class="mono">0x0B = 0x99</b><br>选择 48× LNA 与 24× PGA。</div>
+    <div class="step"><b class="mono">0x29 = 0xA0</b><br>换上 48× 第一片联动 trim。</div>
+    <div class="step"><b class="mono">0x2A = 0x40</b><br>换上 48× 第二片联动 trim。</div>
+    <div class="step"><b class="mono">0x0F = 0x1F</b><br>写入 124 µs 的低 8 位。</div>
+    <div class="step"><b class="mono">0x10 = 0x20</b><br>高 4 位为 0，高半字节固定 0x2。</div>
+    <div class="step"><b class="mono">0x32 = 0x41</b><br>方向候选、SPS 关闭、低半字节固定 1；raw 方向仍需实测。</div>
+    <div class="step"><b class="mono">0x33 = 0x80</b><br>最后合闸：连续转换、命令触发、芯片 baseline 关闭；写后至少等 50 µs。</div>
+  </div>
+  <div class="panel" style="margin-top:14px"><b>为什么 0x33 必须最后？</b><br>它会让芯片按当前增益、节拍和基线规则开始连续工作。若先合闸再改放大镜或传送带，首批样本会混用旧配置；若 baseline 也在工作，零点会被错误样本污染。</div>
+</section>
+
+<section id="decisions" class="section">
+  <h2>7. 四个真正需要拍板的决策</h2>
+  <div class="grid two">
+    <details class="panel decision" open><summary><span class="answer">硬件 baseline：推荐先关，0x33=0x80</span></summary><p><b>理由：</b>Lina 已有 MCU top/bottom 双基线；H6 只公开 top baseline，且本板还没有确定自动填充还是固化 0x2D/0x2E。</p><p><b>改变结论的实测：</b>若 0x84 不改变原始采样语义，且 0x3C 稳定跟踪松手零点、长期漂移小于 MCU 算法，则开启；若浅按被吸入基线或释放点漂移，则保持关闭。</p></details>
+    <details class="panel decision" open><summary><span class="answer">采样间隔：推荐 124 µs，不先抄 XENO 28 µs</span></summary><p><b>理由：</b>Lina H5 已是 124 µs，MCU 仍按 1 kHz 调度；先保持节拍一致，才能逐项比较 H5/H6。</p><p><b>改变结论的实测：</b>若 124 µs 下快速按压有可复现的陈旧数据，而 28 µs 稳定改善约 96 µs 采样驻留时间且功耗/噪声可接受，再改 0x0F=0x07。</p></details>
+    <details class="panel decision" open><summary><span class="answer">增益：推荐 0x99 整套，而不是 XENO 0x88</span></summary><p><b>理由：</b>0x09=0x20 时，0x0B=0x99 是 48× × 24× = 1152×，精确等于 Lina H5 的 64× × 18×；0x88 是 24× × 22.8×，约 547.2×。</p><p><b>改变结论的实测：</b>若 0x99 触及 0x0000/0x3FFF、左右饱和不对称或噪声导致 RT 不稳，而 0x88+0x60/0x28 保留足够行程并明显降噪，则整套降到 24×。</p></details>
+    <details class="panel decision" open><summary><span class="answer">未公开 8 项：推荐首版不用</span></summary><p><b>理由：</b>没有公开名称、默认值和位定义；XENO 又分常规/LP1/LP2 三套值。盲写会让故障从可解释配置错误变成未知内部状态。</p><p><b>改变结论的实测：</b>公开 9 项完成后仍有可复现问题，且逐项 A/B 证明 XENO 常规值让 raw 噪声、松手点、功耗和冷启动稳定改善，才吸收对应项。</p></details>
+  </div>
+</section>
+
+<section id="verify" class="section">
+  <h2>8. 写后读回清单</h2>
+  <div class="tablewrap"><table><thead><tr><th>顺序/类别</th><th>地址</th><th>两颗低 8 位期望</th><th>判定</th></tr></thead><tbody>
+    <tr><td>1–9</td><td class="mono">0C,09,0B,29,2A,0F,10,32,33</td><td class="mono">83,20,99,A0,40,1F,20,41,80</td><td>九项必须一致；若开 baseline，0x33 期望改 0x84。</td></tr>
+    <tr><td>LED</td><td class="mono">05,06,07,08</td><td class="mono">00,00,00,00</td><td>Lina 的 H6 LED/PWM 保持零电流。</td></tr>
+    <tr><td>固定值</td><td class="mono">26,27,28,2F,34,35</td><td class="mono">0A,05,04,14,03,27</td><td>默认已经正确。</td></tr>
+    <tr><td>SPS/中断</td><td class="mono">11,12,1B,2B,2C</td><td class="mono">00,3C,07,DC,1E</td><td>首版这些路径不接管按键。</td></tr>
+    <tr><td>基线默认</td><td class="mono">2D,2E,30,31</td><td class="mono">00,20,20,20</td><td>不写手动基线时保持默认；0x3C 只记录低 14 位观察值。</td></tr>
+  </tbody></table></div>
+</section>
+
+<section id="errors" class="section">
+  <h2>9. 常见错误清单</h2>
+  <ol class="errorlist panel">
+    <li><b>0x09 bit5 漏写：</b>0x0B=0x99 不再是公开的 48× 组合，读回仍会显示 0x99，但幅度不按 48×。</li>
+    <li><b>0x29/0x2A 不同步：</b>出现增益读回正确、raw 跨度却不按档位变化，以及左右零点偏差。</li>
+    <li><b>0x33 提前写：</b>首批样本和 baseline 吃到旧配置，之后读回正确也不能洗掉污染。</li>
+    <li><b>照抄 H5 地址：</b>H5 0x0A 是采样间隔，H6 用 0x0F/0x10；H5 0x27 是温度补偿，H6 0x27 是固定 0x05。</li>
+    <li><b>照抄 H5 增益：</b>H6 没有 64× LNA；必须换成 0x09/0x0B/0x29/0x2A 组合。</li>
+    <li><b>只看 0x0F 不看 0x10：</b>高半字节固定 0x2，合并值 0–6 禁止。</li>
+    <li><b>把 XENO 0x2F=0x02 当最终值：</b>它只是自动填充中间态，公开最终固定值是 0x14。</li>
+    <li><b>按 H5 同地址解释未公开 8 项：</b>H5 0x16 是 PGA、H6 不是；H5 0x20 是深睡、H6 未公开。</li>
+    <li><b>把 0x3C 按 8 位解析：</b>会丢掉 baseline 高 6 位，把 8192 附近读成错误小值。</li>
+    <li><b>把读回正确当模拟正确：</b>还必须测 raw 方向、幅度、噪声、饱和点、baseline 和左右一致性。</li>
+  </ol>
+</section>
+
+<footer class="footer">
+  <b>来源别名</b>：XH=<span class="mono">Materials/GT_SS_XENO_APP_20260916/src/h6/h6_hal.c</span>；XO=<span class="mono">.../src/h6/h6_offset_cali.c</span>；XD=<span class="mono">.../src/h6/h6_drv.h</span>；XT=<span class="mono">.../src/h6/h6_hw_tab.h</span>；XM=<span class="mono">.../src/demo/include_hal/mfg_mode.h</span>；XG=<span class="mono">.../src/demo/source_hal/mfg_mode.c</span>。H6 页码按 V1.9 PDF；H5 源码为 <span class="mono">app/button.c</span>，MCU 基线为 <span class="mono">src/my_misc.c</span>。
+</footer>
+</div>
+<script>
+const regs = [
+{group:"模拟前端",addr:"0x05",name:"LED_Current_1",def:"0x00",page:"H6 p13",status:"na",statusText:"不适用",tags:"na",bits:"[7:0]=k1；ILED1=Imax*m*k1/255。",analogy:"LED1 的亮度旋钮。",lina:"保持 0x00；Lina 原理图中 H1/H2 的 PWM1–PWM4 未接鼠标 LED。",h5:"H5 LED1 在 0x19，默认/写入 0xFF，公式分母为 256；app/button.c:283，H5 p13。",xeno:"0x00，XH:1173。",wrong:"Lina 不会调亮灯，只会改变 H6 PWM 输出和功耗，使台架零基线偏离；接灯硬件则 LED1 亮度错误。"},
+{group:"模拟前端",addr:"0x06",name:"LED_Current_2",def:"0x00",page:"H6 p13",status:"na",statusText:"不适用",tags:"na",bits:"[7:0]=k2；ILED2=Imax*m*k2/255。",analogy:"LED2 的亮度旋钮。",lina:"保持 0x00。",h5:"H5 LED2 在 0x1A，Lina 写 0xFF；app/button.c:284。",xeno:"默认 0x21，Flash 白平衡可覆盖；XH:73,163-166,1171,1174。",wrong:"PWM2 输出非零；无灯时形成错误台架基线，有灯时 LED2 亮度错误。"},
+{group:"模拟前端",addr:"0x07",name:"LED_Current_3",def:"0x00",page:"H6 p13",status:"na",statusText:"不适用",tags:"na",bits:"[7:0]=k3；ILED3=Imax*m*k3/255。",analogy:"LED3 的亮度旋钮。",lina:"保持 0x00。",h5:"H5 LED3 在 0x1B，Lina 写 0xFF；app/button.c:285。",xeno:"默认 0x3A；XH:74,165,1175。",wrong:"PWM3 输出非零；无灯时形成错误台架基线，有灯时 LED3 亮度错误。"},
+{group:"模拟前端",addr:"0x08",name:"LED_Current_4",def:"0x00",page:"H6 p13",status:"na",statusText:"不适用",tags:"na",bits:"[7:0]=k4；ILED4=Imax*m*k4/255。",analogy:"LED4 的亮度旋钮。",lina:"保持 0x00。",h5:"H5 LED4 在 0x1C，Lina 写 0xFF；app/button.c:286。",xeno:"默认 0x50；XH:75,166,1176。",wrong:"PWM4 输出非零；无灯时形成错误台架基线，有灯时 LED4 亮度错误。"},
+{group:"模拟前端",addr:"0x09",name:"LED_IMAX",def:"0x20",page:"H6 p13",status:"write",statusText:"我们要写",tags:"write",bits:"[7:6] 保留；[5] LNA Gain Control；[4] LED 倍率 m（1=1.5）；[3:0] Imax：0=0 mA、1=0.6、2=1.2、3/4=1.8、5/8=2.4、6/9=3.0、7/A=3.6、B/C=4.2、D=4.8、E=5.4、F=6.0 mA。",analogy:"一个开关同时管灯的最大电流和霍尔放大镜的档位钥匙。",lina:"写 0x20：bit5=1，LED m=0、Imax=0。",h5:"H5 LNA 由 0x14=0x35 直接选 64×；LED 最大电流在 0x1D/0x1E/0x1F，Lina 写 0x88/0x88/0x07。",xeno:"0x25（bit5=1，Imax=2.4 mA），XH:1178。",wrong:"bit5 清 0 后，0x0B=0x99 落在保留组合，48× 失效；改低 5 位还会改变 LED 电流。"},
+{group:"模拟前端",addr:"0x0B",name:"Gain_Config0",def:"0x15",page:"H6 p13–14",status:"write",statusText:"我们要写",tags:"write",bits:"[7:4] LNA：A+bit5=1 为 96×，9+bit5=1 为 48×，8+bit5=1 为 24×，8+bit5=0 为 16×，其他保留；[3:0] PGA：9=24.0×、8=22.8×、7=21.6×、6=20.4×、5=19.2×、4=18.0×、3=16.8×、2=15.6×、1=14.4×、0=13.2×。",analogy:"两级放大镜的档位表。",lina:"写 0x99：48× LNA × 24× PGA = 1152×，与 Lina H5 总增益一致；饱和时整套降到 24×。",h5:"0x14=0x35 为 64×，0x16=0x04 为 18×，总计 1152×；app/button.c:270-273。",xeno:"默认 0x88（24× × 22.8×），XM:34、XG:1397-1400；统一写入见 XH:984-1007,1315-1316。",wrong:"写 0x88 后总增益约 547.2×，只有 H5 的 47.5%；写保留组合则公开增益语义失效。"},
+{group:"模拟前端",addr:"0x29",name:"Gain_Config1",def:"0x40",page:"H6 p15",status:"gain",statusText:"随增益联动",tags:"write gain",bits:"[7:0] 与 LNA 联动：16×=0x50、24×=0x60、48×=0xA0、96×=0xF0。",analogy:"第一级放大镜必须同步更换的垫片。",lina:"48× 时写 0xA0；禁止只改 0x0B。",h5:"无公开同名联动寄存器；Lina H5 只显式写 LNA/PGA 和固定 0x15=0x44。",xeno:"映射 XH:951-969；48×=0xA0，XH:962-964；XENO 当前 16× 为 0x4E。",wrong:"0x0B 为 48× 而它仍是别档时，读回表面正常，raw 零点与跨度却不按 48× 配套工作。"},
+{group:"模拟前端",addr:"0x2A",name:"Gain_Config2",def:"0x32",page:"H6 p15",status:"gain",statusText:"随增益联动",tags:"write gain",bits:"[7:0] 与 LNA 联动：16×=0x20、24×=0x28、48×=0x40、96×=0x60。",analogy:"第二片必须与第一片成对更换的垫片。",lina:"48× 时写 0x40，并与 0x29=0xA0 同批写入。",h5:"无公开同名联动项；不能拿 H5 0x16=0x04 当此项。",xeno:"映射 XH:951-969；48×=0x40，XH:962-965；XENO 当前 16× 为 0x32。",wrong:"两片 trim 一个换一个不换时，模拟前端档位不一致，左右释放点和噪声会偏离同档参考。"},
+{group:"采样节拍",addr:"0x0F",name:"Sample_Interval_L",def:"0x20",page:"H6 p14",status:"write",statusText:"我们要写",tags:"write",bits:"[7:0] 为 12 位 Sample_Interval 的低 8 位。",analogy:"传送带节拍数的个位和十位。",lina:"写 0x1F，与 0x10=0x20 合成 0x01F=31，即 124 µs。",h5:"0x0A=0x0B，公式 11×4+80=124 µs；app/button.c:233，H5 p11。",xeno:"常规 0x07（28 µs），XH:1320；偏移校准 0x0A（40 µs），XO:409-412。",wrong:"照抄 H5 的 0x0B 会得到 44 µs；照套 H5 +80 公式会把实际 124 µs 误判成 204 µs。"},
+{group:"采样节拍",addr:"0x10",name:"Sample_Interval_H",def:"0x20",page:"H6 p14",status:"write",statusText:"我们要写",tags:"write",bits:"[7:4] 固定 0x2；[3:0] 为 Sample_Interval 高 4 位；Time=Sample_Interval×4 µs，不能配置 0–6。",analogy:"传送带节拍数的百位，同时高半字节是固定封条。",lina:"写 0x20：高 4 位为 0，固定封条保持 2。",h5:"H5 粗调在 0x0B，单位 ms；H6 无这种粗调地址。",xeno:"恢复路径写 0x20，XH:1284-1286；常规依赖默认 0x20。",wrong:"写 0x00 会撕掉固定封条；合并值小于 7 会进入禁止区，转换节拍无公开定义。"},
+{group:"采样节拍",addr:"0x11",name:"Sampling_Interval_SPS",def:"0x00",page:"H6 p14",status:"default",statusText:"默认即可",tags:"default",bits:"[7:0] SPS 松手采样间隔，0–255 ms、步进 1 ms；按下时用 Sample_Interval，松手时为该值+1 ms。",analogy:"省电模式里松手后多久巡逻一次。",lina:"保持默认；首版 0x32 bit4=0，SPS 不工作。",h5:"H5 用 0x0B 粗调同时影响普通/SPS 间隔；H6 拆成专用 SPS 寄存器。",xeno:"未见写入；地址宏 XD:119。",wrong:"SPS 关闭时无即时影响；以后开启时，非零值会把松手采样拉长到 N+1 ms，释放事件相应延迟。"},
+{group:"采样节拍",addr:"0x12",name:"Key_Released_Timeout",def:"0x3C",page:"H6 p14",status:"default",statusText:"默认即可",tags:"default",bits:"[7:0] SPS 松手超时，可设 1–256 s；实际时间=寄存器值+1 s，默认 60→61 s。",analogy:"松手多久后才允许系统下班省电的计时器。",lina:"保持默认；SPS 关闭时不生效。",h5:"H5 0x0E=0x1F，实际约 31 s；H6 默认换成 60→61 s。",xeno:"未见写入；地址宏 XD:120。",wrong:"以后开 SPS 时，值太小会让按键过早进入慢速采样，释放边沿被拖到毫秒级；值太大则省电不生效。"},
+{group:"采样节拍",addr:"0x1B",name:"SCK_Idle_Time",def:"0x07",page:"H6 p15",status:"default",statusText:"默认即可",tags:"default",bits:"[7:5] 固定 0；[4:0] SCK 空闲检测值；SCK_Idle_Time=(value+3)/2 µs，默认 7→5 µs。",analogy:"判断时钟线是不是已经没人说话的安静计时器。",lina:"保持默认；首版命令触发，0x33 bit4=0。",h5:"H5 无公开对应项。",xeno:"0x01（2 µs），XH:1321。",wrong:"在 SCK 空闲中断模式下，值太小会把正常字节间隔误判为空闲；值太大则真正空闲迟迟不被识别。"},
+{group:"按键判定",addr:"0x2B",name:"Press_Key_Threshold_L",def:"0xDC",page:"H6 p15",status:"default",statusText:"默认即可",tags:"default",bits:"[7:0] 14 位按下阈值低 8 位。",analogy:"判卷分数线的小数部分。",lina:"保持默认；Lina 由 MCU 的 Hall_CalculateNode 和 Rapid Trigger 判键。",h5:"H5 无公开按下阈值寄存器；Lina 在 MCU 中判行程。",xeno:"H6_TH=0x03，XT:67、XH:1322。",wrong:"启用内部 SPS/中断时，阈值过高会要求更深行程，过低会让噪声直接触发按键事件。"},
+{group:"按键判定",addr:"0x2C",name:"Press_Key_Threshold_H",def:"0x1E",page:"H6 p15",status:"default",statusText:"默认即可",tags:"default",bits:"[7] 保留；[6] Key_Type1：1=按下 ADC 增大且大于阈值，0=按下 ADC 减小且小于阈值；[5:0] 阈值高 6 位，默认合并阈值 0x1EDC。",analogy:"判卷分数线的高位，以及分数涨算对还是降算对。",lina:"保持默认；内部判卷不启用，方向由 MCU 现有反相逻辑处理。",h5:"H5 SPS 只有松手阈值 0x0F/0x10；Lina H5 PWM 原始值按下下降。",xeno:"0x40，XH:1323。",wrong:"bit6 配反会把按下和松开在 SPS/中断路径中颠倒；高 6 位配错会整体移动触发点。"},
+{group:"按键判定",addr:"0x32",name:"Key_Type",def:"0x41",page:"H6 p16",status:"write",statusText:"我们要写/待实测",tags:"write test",bits:"[7] 输入磁场极性反转；[6] Key_Type2：1=按下 ADC 增大，0=按下 ADC 减小；[5] 固定 0；[4] SPS 使能；[3:0] 固定 0x1。",analogy:"方向箭头和省电总开关合在一枚旋钮上。",lina:"候选写 0x41：不翻转输入、按下降值、SPS 关、低半字节固定 1；H6 raw 方向必须上板复核。",h5:"无独立极性寄存器；Lina H5 PWM 中 PRESS_KEY_AND_VALUE_INCREASE=0，MCU 再执行 16383-raw；inc/my_misc.h:39-49、src/my_misc.c:462-464。",xeno:"正常 0x41，XT:64、XH:1325；偏移校准临时 0x4F，XO:418-419。",wrong:"bit6 配反会反转芯片内部按键方向；bit4=1 会让 SPS 间隔和超时突然生效；低半字节错则固定值失败。"},
+{group:"基线",addr:"0x2D",name:"Baseline_Initial_Value_L",def:"0x00",page:"H6 p15–16",status:"test",statusText:"待实测",tags:"test",bits:"[7:0] 14 位 Baseline_Initial_Value 低 8 位；先写本项再写 0x2E。",analogy:"松手零点记忆的个位和十位。",lina:"首版 0x33 bit2=0，不写手动基线；若开启，先决定 Flash 固化还是自动填充。",h5:"无公开对应；Lina 用 MCU gwTopBaseline/gwBottomBaseline 双基线，src/my_misc.c:74-75,135-160。",xeno:"Flash 数据存在时写 top_raw & 0xFF，XH:879-894,901-937；无数据时走自动填充。",wrong:"初始零点写错会让 0x3C 从错误位置开始；合法样本落在偏差窗口外时，松手值长期不收敛。"},
+{group:"基线",addr:"0x2E",name:"Baseline_Initial_Value_H",def:"0x20",page:"H6 p16",status:"test",statusText:"待实测",tags:"test",bits:"[7:6] 保留；[5:0] Baseline_Initial_Value 高 6 位；默认完整值 0x2000=8192；先 0x2D 后 0x2E。",analogy:"松手零点记忆的百位。",lina:"同 0x2D；默认 8192 只是中心值，不等于本板磁路实测值。",h5:"无芯片公开对应；MCU 初始 top/bottom 分别为 10000/6000。",xeno:"Flash 数据存在时写 (top_raw >> 8) & 0x3F，XH:879-894,930-937。",wrong:"顺序或掩码写错会把零点拼成另一个 14 位数，内部阈值与 0x3C 立即偏离真实松手点。"},
+{group:"基线",addr:"0x30",name:"Baseline_Positive_Deviation",def:"0x20",page:"H6 p16",status:"test",statusText:"待实测",tags:"test",bits:"[7:0] BASL_PDEL；小于 BASL_INI+16×BASL_PDEL 的样本参与基线，默认窗口 +512。",analogy:"允许零点向上漂移的围栏。",lina:"首版关硬件基线时不写；若开启，默认 0x20 可作初始值。",h5:"无芯片公开对应；MCU 用 MAGNETIC_NOISE=60 和自写规则控制 top 基线。",xeno:"0x20，XH:1343。",wrong:"围栏太小会使正常漂移进不了基线；围栏太大会把浅按样本纳入零点，使松手零点逐渐拉高。"},
+{group:"基线",addr:"0x31",name:"Baseline_negative_Deviation",def:"0x20",page:"H6 p16",status:"test",statusText:"待实测",tags:"test",bits:"[7:0] BASL_NDEL；大于 BASL_INI-16×BASL_NDEL 的样本参与基线，默认窗口 -512。",analogy:"允许零点向下漂移的围栏。",lina:"同 0x30。",h5:"无芯片公开对应；MCU bottom 基线另有算法，src/my_misc.c:222-286。",xeno:"0x20，XH:1344。",wrong:"围栏太小会造成负向漂移不跟踪；围栏太大会把按下样本拉进零点，造成释放后基线偏低。"},
+{group:"基线",addr:"0x33",name:"Work_Mode",def:"0x00",page:"H6 p17",status:"write",statusText:"我们要写",tags:"write",bits:"[7] 1=连续、0=单次，切换后等 50 µs；[6] 固定 0；[5] Interrupt_Mode_EN；[4] 中断触发方式；[3] First_Hall_Flag，中断模式链首 0、后续 1，其他模式全 0；[2] BASL_EN；[1] 固定 0；[0] BASL_INIEN。",analogy:"整条流水线最后合闸的总开关。",lina:"最后写 0x80：连续、命令触发、非中断、芯片 baseline 关、bit3=0；若实测开启 baseline 则 0x84。",h5:"连续/SPS 在 0x18=0x8E；没有 H6 这些 baseline/interrupt 位。",xeno:"自动填充序列 0x81→0x80，最终 0x84，XH:1332-1353；校准恢复也写 0x84，XH:1299-1300。",wrong:"提前写会让首批样本和 baseline 吃到旧配置；bit7=0 时 1 kHz 轮询可能反复读旧值；bit0 停留为 1 会把按下过程拿去更新零点。"},
+{group:"基线",addr:"0x3C",name:"Baseline_Real-time_Value",def:"0x00",page:"H6 p17",status:"readonly",statusText:"只读",tags:"readonly",bits:"只读；用 WR_REG 读回 16 位，其中低 14 位是实时 baseline。",analogy:"查看芯片当前零点记忆的仪表盘。",lina:"不写；开启硬件基线后读取低 14 位并与 MCU top baseline 对比。",h5:"无芯片公开对应；Lina 从 MCU 变量取 top/bottom baseline。",xeno:"仅地址宏 BASLINE，XD:162；常规代码未见实际读取。",wrong:"按 8 位普通寄存器解析会丢失高 6 位，8192 附近的零点会被截断成错误小值。"},
+{group:"输出杂项",addr:"0x0C",name:"Test_Reg0",def:"0xAA",page:"H6 p14",status:"write",statusText:"我们要写",tags:"write",bits:"整字节必须写固定值 0x83。",analogy:"出厂工位要求贴在机器上的固定标签。",lina:"必须写 0x83；默认 0xAA 是陷阱。",h5:"同地址也是 Test_Reg0，但 H5 固定值是 0xB5；app/button.c:235。",xeno:"0x83，XH:1221；校准时同样写，XO:399。",wrong:"读回为 0xAA 或其他错误值时固定值验收失败；后续采样数据不能按手册基线解释。"},
+{group:"输出杂项",addr:"0x26",name:"Test_Reg1",def:"0x0A",page:"H6 p15",status:"default",statusText:"默认即可",tags:"default",bits:"整字节固定 0x0A。",analogy:"第一枚固定标签。",lina:"默认即可；写 0x0A 与不写等价。",h5:"H5 固定标签在 0x0D/0x11/0x12/0x15/0x17/0x21 等地址，不能按地址搬。",xeno:"0x0A，XH:1224,1295；偏移校准临时 0x00，XO:421-423。",wrong:"误写非 0x0A 时读回立即不匹配；芯片离开规定固定配置。"},
+{group:"输出杂项",addr:"0x27",name:"Test_Reg2",def:"0x05",page:"H6 p15",status:"default",statusText:"默认即可",tags:"default",bits:"整字节固定 0x05。",analogy:"第二枚固定标签。",lina:"默认即可。",h5:"H5 0x27 是温度补偿，Lina 写 0x00；H6 0x27 却是固定 0x05。",xeno:"0x05，XH:1225,1296；偏移校准临时 0x00，XO:421-423。",wrong:"照抄 H5 温补值 0x00 会让 H6 固定值验收失败并破坏测试配置。"},
+{group:"输出杂项",addr:"0x28",name:"Test_Reg3",def:"0x04",page:"H6 p15",status:"default",statusText:"默认即可",tags:"default",bits:"整字节固定 0x04。",analogy:"第三枚固定标签。",lina:"默认即可。",h5:"H5 无同地址同功能；其固定值体系在其他地址。",xeno:"0x04，XH:1226,1297。",wrong:"读回非 0x04 即固定值验收失败。"},
+{group:"输出杂项",addr:"0x2F",name:"Test_Reg4",def:"0x14",page:"H6 p16",status:"default",statusText:"默认即可",tags:"default",bits:"整字节固定 0x14。",analogy:"基线系统旁边的一枚固定标签。",lina:"保持 0x14；不要把 XENO 自动填充阶段的临时值当最终配置。",h5:"H5 Test_Reg4 在 0x17=0x7C。",xeno:"自动填充流程先 0x02，最终恢复 0x14，XH:1332-1340。",wrong:"最终停留在 0x02 时，固定值验收失败；只有完整复现 XENO 时序才可把它当中间态。"},
+{group:"输出杂项",addr:"0x34",name:"Test_Reg5",def:"0x03",page:"H6 p17",status:"default",statusText:"默认即可",tags:"default",bits:"整字节固定 0x03。",analogy:"最后一枚固定标签。",lina:"默认即可。",h5:"H5 Test_Reg5 在 0x21=0x88，地址和值都变了。",xeno:"未见常规写入；地址宏 XD:154。",wrong:"读回非 0x03 即固定值验收失败。"},
+{group:"输出杂项",addr:"0x35",name:"SDO_Drive_Current",def:"0x27",page:"H6 p17",status:"default",statusText:"默认即可",tags:"default",bits:"[7:4] 固定 0x2；[3] 固定 0；[2:0] SDO 电流：000=2 mA、001=4 mA、011=8 mA、111=12 mA。",analogy:"SDO 这根数据线的嗓门。",lina:"默认 0x27 即可；Lina 已实测三次读回均为 0x27。",h5:"H5 SDO 驱动在 0x1F[2:0]，Lina 写 0x07=12 mA。",xeno:"未见写入；地址宏 XD:155。",wrong:"电流太小会使 2 MHz 串联链边沿变慢并出现 CRC/读回错误；电流太大可能振铃过冲，使 MISO 采样错码。"},
+{group:"未公开",addr:"0x13",name:"未公开寄存器",def:"未知",page:"H6 p13–17 未列出",status:"undoc",statusText:"未公开",tags:"undoc",bits:"未公开，不推测。",analogy:"一只没有刻度标签的内部旋钮。",lina:"首版不写，待确认。",h5:"H5 0x13 是 Filter_Config，Lina 写 0x01；不能把滤波含义搬到 H6。",xeno:"常规 0x7F，XH:1228；LP1 0x5F，XH:1245；LP2 0x7F，XH:1262。",wrong:"会失去公开手册定义的已知状态，只能复位或回写 XENO 值恢复；具体功能影响待实测。"},
+{group:"未公开",addr:"0x15",name:"未公开寄存器",def:"未知",page:"H6 p13–17 未列出",status:"undoc",statusText:"未公开",tags:"undoc",bits:"未公开，不推测。",analogy:"另一只无标签内部旋钮。",lina:"首版不写，待确认。",h5:"H5 0x15 是 Test_Config0，Lina 写 0x44。",xeno:"常规 0x05，XH:1229；LP1 0x85，XH:1246；LP2 0x05，XH:1263。",wrong:"写错后不能用 H5 0x44 恢复；公开资料无法给出功能故障名。"},
+{group:"未公开",addr:"0x16",name:"未公开寄存器",def:"未知",page:"H6 p13–17 未列出",status:"undoc",statusText:"未公开",tags:"undoc",bits:"未公开，不推测。",analogy:"无标签内部旋钮。",lina:"首版不写，待确认。",h5:"H5 0x16 是 PGA_Config0，Lina 写 0x04=18×；H6 PGA 已移到 0x0B[3:0]。",xeno:"常规 0x02，XH:1230；LP1/LP2 均 0x01，XH:1247,1264。",wrong:"误当 PGA 写入 H5 值会覆盖未知内部状态，只能复位或按 XENO 回写。"},
+{group:"未公开",addr:"0x18",name:"未公开寄存器",def:"未知",page:"H6 p13–17 未列出",status:"undoc",statusText:"未公开",tags:"undoc",bits:"未公开，不推测。",analogy:"无标签内部旋钮。",lina:"首版不写，待确认。",h5:"H5 0x18 是 ModeConfig0，Lina 写 0x8E；H6 工作模式已在 0x33。",xeno:"常规 0x03，XH:1231；LP1 0x03，XH:1248；LP2 0x0D，XH:1265。",wrong:"照抄 0x8E 会覆盖未知状态；H6 的模式判断仍应只看公开的 0x33。"},
+{group:"未公开",addr:"0x1C",name:"未公开寄存器",def:"未知",page:"H6 p13–17 未列出",status:"undoc",statusText:"未公开",tags:"undoc",bits:"未公开，不推测。",analogy:"无标签内部旋钮。",lina:"首版不写，待确认。",h5:"H5 0x1C 是 LED_Current_4，Lina 写 0xFF。",xeno:"常规 0xFF，XH:1232；LP1/LP2 均 0x7F，XH:1249,1266。",wrong:"数值虽与 H5 LED4 相同，但功能未公开，不能据此把它当 LED 寄存器验证亮度。"},
+{group:"未公开",addr:"0x1E",name:"未公开寄存器",def:"未知",page:"H6 p13–17 未列出",status:"undoc",statusText:"未公开",tags:"undoc",bits:"未公开，不推测。",analogy:"无标签内部旋钮。",lina:"首版不写，待确认。",h5:"H5 0x1E 是 LED_MaxCur3_4，Lina 写 0x88。",xeno:"常规 0x80，XH:1233；LP1 0x80，XH:1250；LP2 0x40，XH:1267。",wrong:"写 H5 0x88 会进入无公开定义状态；恢复依据只有复位或 XENO 0x80。"},
+{group:"未公开",addr:"0x20",name:"未公开寄存器",def:"未知",page:"H6 p13–17 未列出",status:"undoc",statusText:"未公开",tags:"undoc",bits:"未公开，不推测。",analogy:"无标签内部旋钮。",lina:"首版不写，待确认。",h5:"H5 0x20 是 DeepSleepEn，Lina 写 0x00 禁止深睡。",xeno:"常规 0x80，XH:1234；LP1 0x80，XH:1251；LP2 0x40，XH:1268。",wrong:"把 H5 深睡值 0x00 抄来会覆盖未知状态；不能用 H5 深睡行为解释 H6 功耗。"},
+{group:"未公开",addr:"0x25",name:"未公开寄存器",def:"未知",page:"H6 p13–17 未列出",status:"undoc",statusText:"未公开",tags:"undoc",bits:"未公开，不推测。",analogy:"无标签内部旋钮。",lina:"首版不写，待确认。",h5:"H5 手册未列 0x25，无对应。",xeno:"常规 0x29，XH:1235；LP1 0x28，XH:1252；LP2 0x26，XH:1269。",wrong:"写错后没有 H5 或 H6 公开值可回退，只能复位或回写 XENO 场景值。"}
+];
+const cardsRoot=document.getElementById('cards');
+function field(label,text,cls=""){const row=document.createElement('div');row.className='field '+cls;const b=document.createElement('b');b.textContent=label;const d=document.createElement('div');d.textContent=text;row.append(b,d);return row}
+let currentGroup='';
+regs.forEach(r=>{if(r.group!==currentGroup){currentGroup=r.group;const h=document.createElement('h3');h.textContent=currentGroup;cardsRoot.appendChild(h)}const d=document.createElement('details');d.className=`reg-card status-${r.status}`;d.dataset.tags=r.tags;d.dataset.search=[r.addr,r.name,r.def,r.page,r.statusText,r.bits,r.analogy,r.lina,r.h5,r.xeno,r.wrong].join(' ').toLowerCase();const s=document.createElement('summary');const row=document.createElement('div');row.className='summary-row';const a=document.createElement('span');a.className='addr';a.textContent=r.addr;const mid=document.createElement('span');const nm=document.createElement('span');nm.className='reg-name';nm.textContent=r.name;const meta=document.createElement('span');meta.className='reg-meta';meta.textContent=`默认 ${r.def} · ${r.page}`;mid.append(nm,document.createElement('br'),meta);const p=document.createElement('span');p.className='pill';p.textContent=r.statusText;row.append(a,mid,p);s.appendChild(row);const body=document.createElement('div');body.className='card-body';const an=field('类比',r.analogy,'analogy');body.append(field('位定义',r.bits),an,field('Lina',r.lina),field('H5 对照',r.h5),field('XENO',r.xeno),field('写错后果',r.wrong,'wrong'));d.append(s,body);cardsRoot.appendChild(d)});
+const search=document.getElementById('search'),status=document.getElementById('status'),shown=document.getElementById('shown');
+function applyFilter(){const q=search.value.trim().toLowerCase();const st=status.value;let n=0;document.querySelectorAll('.reg-card').forEach(card=>{const okQ=!q||card.dataset.search.includes(q);const okS=st==='all'||card.dataset.tags.split(' ').includes(st);const ok=okQ&&okS;card.classList.toggle('hidden',!ok);if(ok)n++});shown.textContent=n}
+search.addEventListener('input',applyFilter);status.addEventListener('change',applyFilter);document.getElementById('expand').onclick=()=>document.querySelectorAll('.reg-card:not(.hidden)').forEach(x=>x.open=true);document.getElementById('collapse').onclick=()=>document.querySelectorAll('.reg-card').forEach(x=>x.open=false);
+function calcGain(){const v=document.getElementById('gainSel').value;const bit=document.getElementById('bit5').checked;const pga=v==='0x99'?24.0:22.8;let lna=null,trim=null;if(v==='0x88'){lna=bit?24:16;trim=lna===24?['0x60','0x28']:['0x50','0x20']}else if(bit){lna=48;trim=['0xA0','0x40']}const out=document.getElementById('gainOut');if(lna){out.innerHTML=`<b>${v} + bit5=${bit?1:0}</b><br>LNA ${lna}× × PGA ${pga}× = <b>${(lna*pga).toFixed(1).replace(/\.0$/,'')}</b>×<br>配套 0x29=${trim[0]}，0x2A=${trim[1]}${v==='0x99'&&bit?'<br>这是与 Lina H5 相同的 1152× 首版推荐。':''}`}else{out.innerHTML='<b>保留组合</b><br>0x0B=0x99 且 0x09 bit5=0 时，手册没有公开 48× 语义；不能按 48× 配置。'}}document.getElementById('gainSel').onchange=calcGain;document.getElementById('bit5').onchange=calcGain;calcGain();
+function hexByte(id){const x=parseInt(document.getElementById(id).value,16);return Number.isFinite(x)&&x>=0&&x<=255?x:null}
+function calcSample(){const f=hexByte('regF'),h=hexByte('reg10'),out=document.getElementById('sampleOut');if(f===null||h===null){out.textContent='请输入 00–FF 的十六进制值';return}const value=((h&0x0F)<<8)|f,us=value*4;let msg=`合并 Sample_Interval=0x${value.toString(16).toUpperCase().padStart(3,'0')}，时间=${us} µs`;if((h&0xF0)!==0x20)msg+='；警告：0x10[7:4] 不是固定值 0x2';if(value<7)msg+='；警告：合并值 0–6 禁止配置';out.textContent=msg}
+document.getElementById('regF').oninput=calcSample;document.getElementById('reg10').oninput=calcSample;document.getElementById('set124').onclick=()=>{document.getElementById('regF').value='1F';document.getElementById('reg10').value='20';calcSample()};document.getElementById('set28').onclick=()=>{document.getElementById('regF').value='07';document.getElementById('reg10').value='20';calcSample()};calcSample();
+</script>
+</body>
+</html>
