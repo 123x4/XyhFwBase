@@ -10,7 +10,6 @@
 #include "my_adc.h"
 #if defined(GT_LINA_T1A_H6_PWM)
 #include "my_debug.h"
-#include "my_tick.h"
 #include "usbcore.h"
 #include "WWDT.h"
 #endif
@@ -807,7 +806,7 @@ BOOL Button_Scan(void)
 #if defined(GT_LINA_T1A_H6_PWM)
 /* Extra delay appended to the CT16B1_DelayUs() high time. At 48 MHz,
  * 31 NOPs add 646 ns. With a 126 us delay, 36 NOPs measured 128.10 us.
- * Keep this a literal sequence and re-trim by whole NOPs. */
+ * Keep the literal 31-NOP sequence. Recheck the pulse width after each build. */
 #define H6_PULSE_TAIL_1()    __NOP()
 #define H6_PULSE_TAIL_2()    H6_PULSE_TAIL_1(); H6_PULSE_TAIL_1()
 #define H6_PULSE_TAIL_4()    H6_PULSE_TAIL_2(); H6_PULSE_TAIL_2()
@@ -985,13 +984,133 @@ void ana_hall2_phy_set_mode(unsigned char length)
 }
 
 #if defined(GT_LINA_T1A_H6_PWM)
-#define H6_CAL_HIGH_US       126U
-#define H6_CAL_LOW_US        60U
-#define H6_CAL_ATTEMPTS_MAX  128U
-#define H6_CAL_OK_MIN        0x7CU
-#define H6_CAL_OK_MAX        0x84U
-#define H6_CAL_SETTLE_MS     20U
-#define H6_REPORT_PERIOD_MS  1000U
+#define H6_CAL_HIGH_US       126U  /* td10: measured ~128.00 us, spec 128 us +/-5% (p. 12). */
+#define H6_CAL_LOW_US        60U   /* td12: measured 62.81-67.50 us, spec >50 us (p. 12). */
+#define H6_CAL_ATTEMPTS_MAX  128U  /* XENO retry limit. Stop on the first pass. */
+#define H6_CAL_OK_MIN        0x7CU /* Inclusive lower bound for both chips (p. 19). */
+#define H6_CAL_OK_MAX        0x84U /* Inclusive upper bound for both chips (p. 19). */
+#define H6_CAL_SETTLE_MS     20U   /* XENO settling wait after the final attempt. */
+
+#define H6_CMD_HIGH_US       37U   /* td6: measured 39.16-39.17 us, spec 39 us +/-5% (p. 12). */
+#define H6_CMD_LOW_US        4U    /* td5: measured 6.8-7.0 us, spec >3 us (p. 12). */
+
+typedef struct
+{
+    uint8_t address;
+    uint8_t value;
+} H6_InitEntry;
+
+static const H6_InitEntry h6_init_table[] =
+{
+    /* Fixed values (GTRY164 pp. 14-16). In this group only 0x0C differs
+     * from reset. Other values violate the fixed-value requirements. */
+    {0x0CU, 0x83U},   /* Test_Reg0, p. 14: replace reset 0xAA with required 0x83. */
+    {0x26U, 0x0AU},   /* Test_Reg1, p. 15: explicitly write fixed reset value. */
+    {0x27U, 0x05U},   /* Test_Reg2, p. 15: explicitly write fixed reset value. */
+    {0x28U, 0x04U},   /* Test_Reg3, p. 15: explicitly write fixed reset value. */
+    {0x2FU, 0x14U},   /* Test_Reg4, p. 16: keep fixed 0x14. XENO uses 0x02
+                        * temporarily for baseline auto-fill, then restores 0x14. */
+
+    /* Analog front end (pp. 13-15). Keep the gain and both trims together.
+     * Mismatched trims leave the selected LNA with the wrong calibration. */
+    {0x09U, 0x20U},   /* LED_IMAX, p. 13: bit 5 selects 24x with 0x0B[7:4]=8.
+                        * Clearing it selects 16x. Imax=0 since Lina has no Hall
+                        * LED load. XENO uses 0x25, which sets Imax=2.4 mA. */
+    {0x0BU, 0x88U},   /* Gain_Config0, pp. 13-14: start at 24x LNA/22.8x PGA.
+                        * If unsaturated travel spans <3000 codes, evaluate
+                        * 0x99 (48x/24x) with trims 0xA0/0x40. */
+    {0x29U, 0x60U},   /* Gain_Config1, p. 15: first trim for 24x LNA. */
+    {0x2AU, 0x28U},   /* Gain_Config2, p. 15: second trim for 24x LNA. */
+
+    /* Absent from the V1.9 register map (pp. 13-17). All eight values come
+     * from XENO h6_hal_type_mode(). Bit meanings and effects of other
+     * values are unknown. If ADC issues persist after checking wiring,
+     * compare against a test build that omits this whole group. */
+    {0x13U, 0x7FU},
+    {0x15U, 0x05U},
+    {0x16U, 0x02U},
+    {0x18U, 0x03U},
+    {0x1CU, 0xFFU},
+    {0x1EU, 0x80U},
+    {0x20U, 0x80U},
+    {0x25U, 0x29U},
+
+    /* Continuous conversion interval (p. 14): 31 x 4 us = 124 us, as in
+     * Lina H5. H5 adds 80 us, so copying its count 0x0B gives 44 us on H6. */
+    {0x0FU, 0x1FU},   /* Sample_Interval_L: low 8 bits of 31. */
+    {0x10U, 0x20U},   /* Sample_Interval_H: [7:4] fixed at 2, [3:0] zero.
+                        * Adding 1 to the high count adds 1024 us. */
+
+    /* Key direction, interrupt settings and TOP baseline (pp. 15-16).
+     * Keep XENO interrupt settings, which are inactive in this mode. */
+    {0x1BU, 0x01U},   /* SCK_Idle_Time, p. 15: 2 us. A wrong value shifts the
+                        * trigger point in SCK-low idle interrupt mode. */
+    {0x2BU, 0x03U},   /* Press_Key_Threshold_L, p. 15: threshold low byte. */
+    {0x2CU, 0x40U},   /* Press_Key_Threshold_H, p. 15: high count zero, bit 6
+                        * selects rising ADC codes for IRQ/SPS detection.
+                        * A wrong threshold or direction can miss presses. */
+    {0x2DU, 0x00U},   /* Baseline_Initial_L, pp. 15-16: write low byte first. */
+    {0x2EU, 0x20U},   /* Baseline_Initial_H, p. 16: complete seed 8192.
+                        * Wrong bytes/order shift the seed when TOP is enabled. */
+    {0x30U, 0x20U},   /* Baseline_Positive_Deviation, p. 16: +512 codes. */
+    {0x31U, 0x20U},   /* Baseline_Negative_Deviation, p. 16: -512 codes.
+                        * A wrong window accepts or rejects the wrong samples. */
+    {0x32U, 0x01U},   /* Key_Type, p. 16: bit 6 selects falling press codes
+                        * for Lina, bit 4 keeps SPS off, [3:0] fixed at 1.
+                        * XENO 0x41 selects rising codes. Verify physical
+                        * direction after fitting keys. Wrong SPS slows idle. */
+
+    /* LED_Current_1 through LED_Current_4, p. 13: zero each channel. Lina
+     * leaves these outputs disconnected. Nonzero codes drive LED current
+     * if a load is fitted and LED_IMAX permits it. */
+    {0x05U, 0x00U},
+    {0x06U, 0x00U},
+    {0x07U, 0x00U},
+    {0x08U, 0x00U},
+
+    /* Work_Mode, p. 17: write last so continuous conversion starts only
+     * after configuration. Bit 7 enables continuous mode, bits 5:4 leave
+     * interrupts off with command trigger selected, bit 2 leaves TOP off.
+     * Mode changes require at least 50 us before reading conversion data. */
+    {0x33U, 0x80U}
+};
+
+#define H6_INIT_COUNT (sizeof(h6_init_table) / sizeof(h6_init_table[0]))
+
+static uint8_t Hall_H6_WriteHeader(uint8_t address, uint8_t value)
+{
+    const uint8_t addressBits = address & 0x3FU;
+    unsigned int crc = addressBits ^ value;
+
+    /* CRC_WR is the parity of all six address and eight data bits. */
+    crc ^= crc >> 4;
+    crc ^= crc >> 2;
+    crc ^= crc >> 1;
+    return (uint8_t)(0x80U | ((crc & 1U) << 6) | addressBits);
+}
+
+static void Hall_H6_WriteReg(uint8_t address, uint8_t value)
+{
+    const uint8_t header = Hall_H6_WriteHeader(address, value);
+    uint8_t tx[4] = {header, value, header, value};
+    uint8_t rx[4];
+
+    SSP_Send_Receive(tx, rx, sizeof(tx));
+    Hall_CLK_Command_SET(H6_CMD_HIGH_US, H6_CMD_LOW_US);
+}
+
+static void Hall_H6_Configure(void)
+{
+    unsigned int i;
+
+    for (i = 0U; i < H6_INIT_COUNT; ++i)
+    {
+        Hall_H6_WriteReg(h6_init_table[i].address, h6_init_table[i].value);
+    }
+
+    /* Allow at least 50 us after switching conversion mode (GTRY164 p. 17). */
+    TimerDelayMsec(1U);
+}
 
 static void Hall_H6_Diagnostic(void)
 {
@@ -1001,7 +1120,7 @@ static void Hall_H6_Diagnostic(void)
     unsigned int word1;
     unsigned int attempts = 0;
     uint8_t passed;
-    uint32_t lastLog;
+    uint8_t startupLogged = 0U;
 
     do
     {
@@ -1017,20 +1136,22 @@ static void Hall_H6_Diagnostic(void)
 
     TimerDelayMsec(H6_CAL_SETTLE_MS);
 
-    lastLog = MyTick_GetTickMs() - H6_REPORT_PERIOD_MS;
+    if (passed)
+    {
+        Hall_H6_Configure();
+    }
+
     while (1)
     {
-        const uint32_t now = MyTick_GetTickMs();
-
         wwdt_feed();
         if (g_USBCore_Setting.USB_Configuration != 0U)
         {
             PC_Communicate();
-            if (now - lastLog >= H6_REPORT_PERIOD_MS)
+            if (!startupLogged)
             {
                 InfoLog("H6_CAL %s n=%u w0=0x%04X w1=0x%04X",
                         passed ? "PASS" : "FAIL", attempts, word0, word1);
-                lastLog = now;
+                startupLogged = 1U;
             }
             MyDebug_Task();
         }
