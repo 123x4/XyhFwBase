@@ -1,0 +1,113 @@
+--- a/app/button.c
++++ b/app/button.c
+@@ -804,9 +804,83 @@
+ }
+ 
+ 
++#if defined(GT_LINA_T1A_H6_PWM)
++/* GTRY164 command pulses need sub-microsecond resolution: td1 is 5 us +/-5 %
++ * (4.75-5.25 us) and CT16B1_DelayUs() only works in whole microseconds, so it
++ * cannot produce td1 at all.  Run CT16B1 at 48 MHz (PR=0, 20.83 ns/count) and
++ * derive the high phase from the counter.
++ *
++ * Only the high phase is generated with maskable interrupts disabled: the 1 ms
++ * tick would stretch it by ~2.3 us, which is fatal for td1 but still inside the
++ * td10/td6 windows.  td2/td5/td12 only have minimum values, so the low phase is
++ * left interruptible and uses the coarse delay.
++ *
++ * H6_PULSE_TRIM_COUNTS is the single calibration constant.  Measure one group
++ * of pulses with the logic analyser, then set it so the mean equals nominal
++ * (counts are signed: negative trims shorten the pulse).
++ */
++#define H6_PULSE_COUNTS_PER_US  48
++#define H6_PULSE_MAX_COUNTS     65500
++#define H6_PULSE_TRIM_COUNTS    0
++
++static void Hall_H6_PulseUs(unsigned short highUs, unsigned short lowUs)
++{
++    uint32_t iocon;
++    uint32_t primask;
++    int32_t  counts;
++    uint16_t start;
++
++    counts = (int32_t)highUs * H6_PULSE_COUNTS_PER_US + H6_PULSE_TRIM_COUNTS;
++    if (counts < 1)
++    {
++        counts = 1;
++    }
++    if (counts > H6_PULSE_MAX_COUNTS)
++    {
++        counts = H6_PULSE_MAX_COUNTS;
++    }
++
++    LPC_CT16B1->TCR = 0;
++    LPC_SYSCON->SYSAHBCLKCTRL |= (1u << 8);
++    LPC_CT16B1->TC = 0;
++    LPC_CT16B1->PC = 0;
++    LPC_CT16B1->PR = 0;                 /* 48 MHz, no prescaler */
++    LPC_CT16B1->MCR = 0;
++
++    LPC_GPIO->DIR[1] |= (1u << 15);     /* PIO1_15 as GPIO output */
++    iocon = LPC_IOCON->PIO1_15;
++    iocon &= ~0x07u;                    /* FUNC=0 -> GPIO */
++    LPC_IOCON->PIO1_15 = iocon;
++
++    primask = __get_PRIMASK();
++    __disable_irq();
++
++    LPC_CT16B1->TCR = 1;
++    LPC_GPIO->SET[1] = (1u << 15);      /* SCK high */
++    start = (uint16_t)LPC_CT16B1->TC;
++    while ((uint16_t)(LPC_CT16B1->TC - start) < (uint16_t)counts)
++    {
++    }
++    LPC_GPIO->CLR[1] = (1u << 15);      /* SCK low */
++    LPC_CT16B1->TCR = 0;
++
++    __set_PRIMASK(primask);
++
++    CT16B1_DelayUs(lowUs);              /* td2/td5/td12: minimum only */
++
++    iocon = LPC_IOCON->PIO1_15;
++    iocon &= ~0x07u;
++    iocon |= 0x03u;                     /* back to SCK1 for SSP1 */
++    LPC_IOCON->PIO1_15 = iocon;
++}
++#endif
++
+ void Hall_CLK_Command_SET(unsigned short high_delay, unsigned short low_delay)
+ {
+ #if (defined(GT_LINA_T1A_H5))
++#if defined(GT_LINA_T1A_H6_PWM)
++    Hall_H6_PulseUs(high_delay, low_delay);
++#else
+   	uint32_t reg;
+ 	
+ 	NVIC_DisableIRQ(USB_IRQn);
+@@ -821,9 +895,6 @@
+ 	//nsAPI_SSP_Delay1us(high_delay);
+ 	CT16B1_DelayUs(high_delay);
+ 
+-#if defined(GT_LINA_T1A_H6_PWM) && defined(H6_SCK_HIGH_TRIM_ONE_CYCLE)
+-  __NOP();
+-#endif
+ 
+ 	DrvGPIOOutput(1,15,0) ;
+ 
+@@ -836,6 +907,7 @@
+ 	
+ 	NVIC_EnableIRQ(USB_IRQn);
+ //	NVIC_DisableIRQ(TIMER_16_0_IRQn);
++#endif
+ #else
+ 	uint32_t reg;
+ 	
+@@ -976,7 +1048,7 @@
+     do
+     {
+         /* GTRY164 Fig. 9: td10 high, td12 low, then two 16-bit words. */
+-        Hall_CLK_Command_SET(DELAY_OUT(128), 60U);
++        Hall_CLK_Command_SET(128U, 60U);
+         SSP_Send_Receive(tx, rx, sizeof(tx));
+         word0 = ((unsigned int)rx[0] << 8) | rx[1];
+         word1 = ((unsigned int)rx[2] << 8) | rx[3];
