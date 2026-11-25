@@ -881,6 +881,18 @@ void Profile_Modify_Name(UINT8 *buffer)
 
 void PC_Communicate(void)
 {
+#if defined(GT_LINA_T1A_H6_PWM)
+    /* The diagnostic loop only needs the existing firmware update command. */
+    Tool_Clear_ArrayData(receive_buff, 0, TRANSFER_LENGTH - 1);
+    if (Usb_Read_Bytes(EP_4_CUSTION_IN, receive_buff, TRANSFER_LENGTH) &&
+        (receive_buff[COMMAND] == PC_CMD_BOOTLOADER ||
+         (receive_buff[2] == PC_CMD_BOOTLOADER &&
+          CRC_Check(receive_buff, 0, 62, PC_CMD_BOOTLOADER))))
+    {
+        Ele_DisableVibrate();
+        Bootloadable_Load();
+    }
+#else
 	BOOL crc;
 	Tool_Clear_ArrayData(receive_buff,0,(TRANSFER_LENGTH-1));
 
@@ -1055,6 +1067,7 @@ void PC_Communicate(void)
 	}
 	
 	Tool_Clear_ArrayData(receive_buff,0,(TRANSFER_LENGTH-1));
+#endif
 }
 
 void PC_Communicate_Test(void)

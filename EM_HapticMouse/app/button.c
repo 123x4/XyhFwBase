@@ -804,9 +804,70 @@ BOOL Button_Scan(void)
 }
 
 
+#if defined(GT_LINA_T1A_H6_PWM)
+/* Short H6 commands need finer steps than the microsecond delay.
+ * Keep the high pulse free of maskable interrupts. The low wait has a minimum.
+ */
+#define H6_PULSE_COUNTS_PER_US  48
+#define H6_PULSE_MAX_COUNTS     65500
+#define H6_PULSE_TRIM_COUNTS    (-33)
+
+static void Hall_H6_PulseUs(unsigned short highUs, unsigned short lowUs)
+{
+    const uint32_t sckMask = 1U << 15;
+    const uint32_t sckFunction = LPC_IOCON->PIO1_15;
+    uint32_t primask;
+    int32_t countsWithTrim;
+    uint16_t counts;
+    uint16_t start;
+
+    countsWithTrim = (int32_t)highUs * H6_PULSE_COUNTS_PER_US + H6_PULSE_TRIM_COUNTS;
+    if (countsWithTrim < 1)
+    {
+        countsWithTrim = 1;
+    }
+    if (countsWithTrim > H6_PULSE_MAX_COUNTS)
+    {
+        countsWithTrim = H6_PULSE_MAX_COUNTS;
+    }
+    counts = (uint16_t)countsWithTrim;
+
+    LPC_SYSCON->SYSAHBCLKCTRL |= 1U << 8;
+    LPC_CT16B1->TCR = 0U;
+    LPC_CT16B1->CTCR = 0U;
+    LPC_CT16B1->TC = 0U;
+    LPC_CT16B1->PC = 0U;
+    LPC_CT16B1->PR = 0U;
+    LPC_CT16B1->MCR = 0U;
+
+    LPC_GPIO->CLR[1] = sckMask;
+    LPC_GPIO->DIR[1] |= sckMask;
+    LPC_IOCON->PIO1_15 = sckFunction & ~0x07U;
+
+    primask = __get_PRIMASK();
+    __disable_irq();
+
+    LPC_CT16B1->TCR = 1U;
+    LPC_GPIO->SET[1] = sckMask;
+    start = (uint16_t)LPC_CT16B1->TC;
+    while ((uint16_t)(LPC_CT16B1->TC - start) < counts)
+    {
+    }
+    LPC_GPIO->CLR[1] = sckMask;
+    LPC_CT16B1->TCR = 0U;
+
+    __set_PRIMASK(primask);
+    CT16B1_DelayUs(lowUs);
+    LPC_IOCON->PIO1_15 = sckFunction;
+}
+#endif
+
 void Hall_CLK_Command_SET(unsigned short high_delay, unsigned short low_delay)
 {
 #if (defined(GT_LINA_T1A_H5))
+#if defined(GT_LINA_T1A_H6_PWM)
+    Hall_H6_PulseUs(high_delay, low_delay);
+#else
   	uint32_t reg;
 	
 	NVIC_DisableIRQ(USB_IRQn);
@@ -832,6 +893,7 @@ void Hall_CLK_Command_SET(unsigned short high_delay, unsigned short low_delay)
 	
 	NVIC_EnableIRQ(USB_IRQn);
 //	NVIC_DisableIRQ(TIMER_16_0_IRQn);
+#endif
 #else
 	uint32_t reg;
 	
@@ -960,6 +1022,7 @@ void ana_hall2_phy_set_mode(unsigned char length)
 #if defined(GT_LINA_T1A_H6_PWM)
 static void Hall_H6_Diagnostic(void)
 {
+    const unsigned int minimumAttempts = 16U;
     uint8_t tx[4] = {0};
     uint8_t rx[4];
     unsigned int word0;
@@ -971,19 +1034,19 @@ static void Hall_H6_Diagnostic(void)
     do
     {
         /* GTRY164 Fig. 9: td10 high, td12 low, then two 16-bit words. */
-        Hall_CLK_Command_SET(DELAY_OUT(128), DELAY_OUT(60));
+        Hall_CLK_Command_SET(128U, 60U);
         SSP_Send_Receive(tx, rx, sizeof(tx));
         word0 = ((unsigned int)rx[0] << 8) | rx[1];
         word1 = ((unsigned int)rx[2] << 8) | rx[3];
         ++attempts;
         passed = rx[1] >= 0x7CU && rx[1] <= 0x84U &&
                  rx[3] >= 0x7CU && rx[3] <= 0x84U;
-    } while (!passed && attempts < 128U);
 
-    if (passed)
-    {
-        TimerDelayMsec(20);
-    }
+        if (passed)
+        {
+            TimerDelayMsec(20);
+        }
+    } while ((attempts < minimumAttempts || !passed) && attempts < 128U);
 
     /* Keep USB logs running here until normal H6 initialization is added. */
     lastLog = MyTick_GetTickMs() - 1000U;
@@ -994,6 +1057,7 @@ static void Hall_H6_Diagnostic(void)
         wwdt_feed();
         if (g_USBCore_Setting.USB_Configuration != 0U)
         {
+            PC_Communicate();
             if (now - lastLog >= 1000U)
             {
                 InfoLog("H6_CAL %s n=%u w0=0x%04X w1=0x%04X",
