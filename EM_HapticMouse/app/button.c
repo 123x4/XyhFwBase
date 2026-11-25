@@ -985,54 +985,39 @@ void ana_hall2_phy_set_mode(unsigned char length)
 }
 
 #if defined(GT_LINA_T1A_H6_PWM)
+#define H6_CAL_HIGH_US       126U
+#define H6_CAL_LOW_US        60U
+#define H6_CAL_ATTEMPTS_MAX  128U
+#define H6_CAL_OK_MIN        0x7CU
+#define H6_CAL_OK_MAX        0x84U
+#define H6_CAL_SETTLE_MS     20U
+#define H6_REPORT_PERIOD_MS  1000U
+
 static void Hall_H6_Diagnostic(void)
 {
-    const unsigned int minimumAttempts = 16U;
     uint8_t tx[4] = {0};
     uint8_t rx[4];
-    uint8_t reg35[3][2];
     unsigned int word0;
     unsigned int word1;
     unsigned int attempts = 0;
-    uint8_t passed = 0;
+    uint8_t passed;
     uint32_t lastLog;
 
     do
     {
         /* GTRY164 Fig. 9: td10 high, td12 low, then two 16-bit words. */
-        Hall_CLK_Command_SET(126U, 60U);
+        Hall_CLK_Command_SET(H6_CAL_HIGH_US, H6_CAL_LOW_US);
         SSP_Send_Receive(tx, rx, sizeof(tx));
         word0 = ((unsigned int)rx[0] << 8) | rx[1];
         word1 = ((unsigned int)rx[2] << 8) | rx[3];
         ++attempts;
-        passed = rx[1] >= 0x7CU && rx[1] <= 0x84U &&
-                 rx[3] >= 0x7CU && rx[3] <= 0x84U;
+        passed = rx[1] >= H6_CAL_OK_MIN && rx[1] <= H6_CAL_OK_MAX &&
+                 rx[3] >= H6_CAL_OK_MIN && rx[3] <= H6_CAL_OK_MAX;
+    } while (!passed && attempts < H6_CAL_ATTEMPTS_MAX);
 
-        if (passed)
-        {
-            TimerDelayMsec(20);
-        }
-    } while ((attempts < minimumAttempts || !passed) && attempts < 128U);
+    TimerDelayMsec(H6_CAL_SETTLE_MS);
 
-    if (passed)
-    {
-        unsigned int readIndex;
-
-        /* GTRY164 Fig. 7: two 16-bit read requests with the write flag clear. */
-        tx[0] = 0x35U;
-        tx[2] = 0x35U;
-        for (readIndex = 0; readIndex < sizeof(reg35) / sizeof(reg35[0]); ++readIndex)
-        {
-            SSP_Send_Receive(tx, rx, sizeof(tx));
-            Hall_CLK_Command_SET(37U, 4U);
-            SSP_Send_Receive(tx, rx, sizeof(tx));
-            reg35[readIndex][0] = rx[1];
-            reg35[readIndex][1] = rx[3];
-        }
-    }
-
-    /* Keep USB logs running here until normal H6 initialization is added. */
-    lastLog = MyTick_GetTickMs() - 1000U;
+    lastLog = MyTick_GetTickMs() - H6_REPORT_PERIOD_MS;
     while (1)
     {
         const uint32_t now = MyTick_GetTickMs();
@@ -1041,16 +1026,8 @@ static void Hall_H6_Diagnostic(void)
         if (g_USBCore_Setting.USB_Configuration != 0U)
         {
             PC_Communicate();
-            if (now - lastLog >= 1000U)
+            if (now - lastLog >= H6_REPORT_PERIOD_MS)
             {
-                /* Emit register results before H6_CAL for the host's --once mode. */
-                if (passed)
-                {
-                    InfoLog("H6_REG35 R=0x%02X L=0x%02X R2=0x%02X L2=0x%02X R3=0x%02X L3=0x%02X",
-                            (unsigned int)reg35[0][0], (unsigned int)reg35[0][1],
-                            (unsigned int)reg35[1][0], (unsigned int)reg35[1][1],
-                            (unsigned int)reg35[2][0], (unsigned int)reg35[2][1]);
-                }
                 InfoLog("H6_CAL %s n=%u w0=0x%04X w1=0x%04X",
                         passed ? "PASS" : "FAIL", attempts, word0, word1);
                 lastLog = now;

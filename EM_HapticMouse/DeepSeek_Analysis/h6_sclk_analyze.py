@@ -69,7 +69,7 @@ def load_edges(path, channel=None):
     return header[ch_idx], out
 
 
-def analyze(edges):
+def analyze(edges, long_min_us=LONG_MIN_US, long_max_us=LONG_MAX_US):
     """Return list of dicts, one per long command pulse."""
     # Rising/falling indexes
     rises = [i for i, (_, v) in enumerate(edges) if v == 1]
@@ -85,7 +85,7 @@ def analyze(edges):
         ri = prev_rises[-1]
         t_rise = edges[ri][0]
         high_us = (t_fall - t_rise) * 1e6
-        if not (LONG_MIN_US <= high_us <= LONG_MAX_US):
+        if not (long_min_us <= high_us <= long_max_us):
             continue
 
         # Low wait to the first following rising edge.
@@ -104,7 +104,7 @@ def analyze(edges):
             if nf:
                 nfi = nf[0]
                 w = (edges[nfi][0] - t) * 1e6
-                if w >= LONG_MIN_US:
+                if w >= long_min_us:
                     break
             clocks.append(t)
             if len(clocks) >= 2:
@@ -138,13 +138,23 @@ def main():
     ap = argparse.ArgumentParser()
     ap.add_argument("csv")
     ap.add_argument("--channel", default=None)
+    ap.add_argument("--long-min", type=float, default=LONG_MIN_US,
+                    help="min high width (us) treated as a command pulse")
+    ap.add_argument("--long-max", type=float, default=LONG_MAX_US,
+                    help="max high width (us) treated as a command pulse")
+    ap.add_argument("--target-us", type=float, default=128.0,
+                    help="nominal high width for the verdict (default 128)")
+    ap.add_argument("--tol-pct", type=float, default=5.0,
+                    help="allowed +/- percent around the target (default 5)")
+    ap.add_argument("--low-min", type=float, default=50.0,
+                    help="minimum low wait in us for the verdict (default 50)")
     args = ap.parse_args()
 
     name, edges = load_edges(args.csv, args.channel)
     if not edges:
         raise SystemExit("no edges parsed")
 
-    results = analyze(edges)
+    results = analyze(edges, args.long_min, args.long_max)
     if not results:
         raise SystemExit(
             "no long command pulse found; check channel, trigger window and "
@@ -175,11 +185,13 @@ def main():
     if len(highs) > 1:
         rest = highs[1:]
         print(f"        first-vs-rest diff = {highs[0] - statistics.mean(rest):+.4f} us")
-    print(f"target: 128.00 us   allowed {TD10_MIN_US}-{TD10_MAX_US} us   "
-          f"dev_from_128 mean={statistics.mean(highs) - 128.0:+.4f} us")
+    lo_t = args.target_us * (1.0 - args.tol_pct / 100.0)
+    hi_t = args.target_us * (1.0 + args.tol_pct / 100.0)
+    print(f"target: {args.target_us:.2f} us   allowed {lo_t:.2f}-{hi_t:.2f} us   "
+          f"dev_from_target mean={statistics.mean(highs) - args.target_us:+.4f} us")
     if lows:
         print(f"low   : first={lows[0]:.4f}  mean={statistics.mean(lows):.4f}  "
-              f"min={min(lows):.4f}  max={max(lows):.4f}  (need > {TD12_MIN_US})")
+              f"min={min(lows):.4f}  max={max(lows):.4f}  (need > {args.low_min})")
     if all_periods:
         print(f"clock : mean period={statistics.mean(all_periods):.4f} us "
               f"({1.0 / statistics.mean(all_periods):.2f} MHz)  "
@@ -187,12 +199,12 @@ def main():
     counts = {r["clocks"] for r in results}
     print(f"clocks per pulse set: {sorted(counts)}  (expected {EXPECTED_CLOCKS})")
 
-    ok_high = all(TD10_MIN_US <= h <= TD10_MAX_US for h in highs)
-    ok_low = all(l > TD12_MIN_US for l in lows) if lows else False
+    ok_high = all(lo_t <= h <= hi_t for h in highs)
+    ok_low = all(l > args.low_min for l in lows) if lows else False
     ok_clocks = all(r["clocks"] == EXPECTED_CLOCKS for r in results)
     print()
-    print(f"VERDICT: td10 {'PASS' if ok_high else 'FAIL'}  "
-          f"td12 {'PASS' if ok_low else 'FAIL'}  "
+    print(f"VERDICT: width {'PASS' if ok_high else 'FAIL'}  "
+          f"low_wait {'PASS' if ok_low else 'FAIL'}  "
           f"clock_count {'PASS' if ok_clocks else 'FAIL'}")
     return 0 if (ok_high and ok_low and ok_clocks) else 1
 
