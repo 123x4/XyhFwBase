@@ -805,70 +805,25 @@ BOOL Button_Scan(void)
 
 
 #if defined(GT_LINA_T1A_H6_PWM)
-/* Short H6 commands need finer steps than the microsecond delay.
- * Keep the high pulse free of maskable interrupts. The low wait has a minimum.
- */
-#define H6_PULSE_COUNTS_PER_US  48
-#define H6_PULSE_MAX_COUNTS     65500
-#define H6_PULSE_TRIM_COUNTS    (-33)
-
-static void Hall_H6_PulseUs(unsigned short highUs, unsigned short lowUs)
-{
-    const uint32_t sckMask = 1U << 15;
-    const uint32_t sckFunction = LPC_IOCON->PIO1_15;
-    uint32_t primask;
-    int32_t countsWithTrim;
-    uint16_t counts;
-    uint16_t start;
-
-    countsWithTrim = (int32_t)highUs * H6_PULSE_COUNTS_PER_US + H6_PULSE_TRIM_COUNTS;
-    if (countsWithTrim < 1)
-    {
-        countsWithTrim = 1;
-    }
-    if (countsWithTrim > H6_PULSE_MAX_COUNTS)
-    {
-        countsWithTrim = H6_PULSE_MAX_COUNTS;
-    }
-    counts = (uint16_t)countsWithTrim;
-
-    LPC_SYSCON->SYSAHBCLKCTRL |= 1U << 8;
-    LPC_CT16B1->TCR = 0U;
-    LPC_CT16B1->CTCR = 0U;
-    LPC_CT16B1->TC = 0U;
-    LPC_CT16B1->PC = 0U;
-    LPC_CT16B1->PR = 0U;
-    LPC_CT16B1->MCR = 0U;
-
-    LPC_GPIO->CLR[1] = sckMask;
-    LPC_GPIO->DIR[1] |= sckMask;
-    LPC_IOCON->PIO1_15 = sckFunction & ~0x07U;
-
-    primask = __get_PRIMASK();
-    __disable_irq();
-
-    LPC_CT16B1->TCR = 1U;
-    LPC_GPIO->SET[1] = sckMask;
-    start = (uint16_t)LPC_CT16B1->TC;
-    while ((uint16_t)(LPC_CT16B1->TC - start) < counts)
-    {
-    }
-    LPC_GPIO->CLR[1] = sckMask;
-    LPC_CT16B1->TCR = 0U;
-
-    __set_PRIMASK(primask);
-    CT16B1_DelayUs(lowUs);
-    LPC_IOCON->PIO1_15 = sckFunction;
-}
+/* Extra delay appended to the CT16B1_DelayUs() high time. One __NOP() is one
+ * 48 MHz cycle (20.83 ns), so 36 NOPs add 750 ns: passing 126 us then lands on
+ * about 128.00 us. Keep this a literal sequence and re-trim by whole NOPs. */
+#define H6_PULSE_TAIL_1()    __NOP()
+#define H6_PULSE_TAIL_2()    H6_PULSE_TAIL_1(); H6_PULSE_TAIL_1()
+#define H6_PULSE_TAIL_4()    H6_PULSE_TAIL_2(); H6_PULSE_TAIL_2()
+#define H6_PULSE_TAIL_8()    H6_PULSE_TAIL_4(); H6_PULSE_TAIL_4()
+#define H6_PULSE_TAIL_16()   H6_PULSE_TAIL_8(); H6_PULSE_TAIL_8()
+#define H6_PULSE_TAIL_32()   H6_PULSE_TAIL_16(); H6_PULSE_TAIL_16()
+#define H6_PULSE_TAIL()      H6_PULSE_TAIL_32(); H6_PULSE_TAIL_4()
 #endif
 
 void Hall_CLK_Command_SET(unsigned short high_delay, unsigned short low_delay)
 {
 #if (defined(GT_LINA_T1A_H5))
-#if defined(GT_LINA_T1A_H6_PWM)
-    Hall_H6_PulseUs(high_delay, low_delay);
-#else
   	uint32_t reg;
+#if defined(GT_LINA_T1A_H6_PWM)
+	uint32_t primask;
+#endif
 	
 	NVIC_DisableIRQ(USB_IRQn);
 //	NVIC_DisableIRQ(TIMER_16_0_IRQn);
@@ -877,12 +832,23 @@ void Hall_CLK_Command_SET(unsigned short high_delay, unsigned short low_delay)
 	reg &= ~0x07;
 	reg |= 0x00;
 	LPC_IOCON->PIO1_15 = reg;	
+#if defined(GT_LINA_T1A_H6_PWM)
+	primask = __get_PRIMASK();
+	__disable_irq();
+#endif
 	DrvGPIOOutput(1,15,1) ;
 
 	//nsAPI_SSP_Delay1us(high_delay);
 	CT16B1_DelayUs(high_delay);
 
+#if defined(GT_LINA_T1A_H6_PWM)
+	H6_PULSE_TAIL();
+#endif
+
 	DrvGPIOOutput(1,15,0) ;
+#if defined(GT_LINA_T1A_H6_PWM)
+	__set_PRIMASK(primask);
+#endif
 
 	//nsAPI_SSP_Delay1us(low_delay);
 	CT16B1_DelayUs(low_delay);
@@ -893,7 +859,6 @@ void Hall_CLK_Command_SET(unsigned short high_delay, unsigned short low_delay)
 	
 	NVIC_EnableIRQ(USB_IRQn);
 //	NVIC_DisableIRQ(TIMER_16_0_IRQn);
-#endif
 #else
 	uint32_t reg;
 	
@@ -1034,7 +999,7 @@ static void Hall_H6_Diagnostic(void)
     do
     {
         /* GTRY164 Fig. 9: td10 high, td12 low, then two 16-bit words. */
-        Hall_CLK_Command_SET(128U, 60U);
+        Hall_CLK_Command_SET(126U, 60U);
         SSP_Send_Receive(tx, rx, sizeof(tx));
         word0 = ((unsigned int)rx[0] << 8) | rx[1];
         word1 = ((unsigned int)rx[2] << 8) | rx[3];
