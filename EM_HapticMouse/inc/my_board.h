@@ -24,6 +24,7 @@
 //#define V4_HALL_HPTIC_V4_G2_0923
 //#define GT_LINA_T1A_H5
 #define GT_LINA_T1A_H5_PWM
+//#define GT_LINA_T1A_H6_PWM
 // #define HAPTIC_V4_PWM
 
 
@@ -32,6 +33,17 @@
 #endif
 #if (defined(V4_HALL_HPTIC_V4_G2_0923))
   #define V4_HALL_HPTIC_V4
+#endif
+
+#if defined(GT_LINA_T1A_H6_PWM)
+  #if defined(GT_LINA_T1A_H5) || defined(GT_LINA_T1A_H5_PWM) || \
+      defined(HAPTIC_V2) || defined(HAPTIC_V3) || defined(HAPTIC_V4) || \
+      defined(HAPTIC_V4_PWM) || defined(P723_POC) || defined(GEN_2_H_V1) || \
+      defined(IRPT_V4) || defined(V4_HALL_HPTIC_V4)
+    #error "Select GT_LINA_T1A_H6_PWM as the only board configuration."
+  #endif
+  /* Reuse the existing Lina PWM pin and peripheral configuration. */
+  #define GT_LINA_T1A_H5_PWM
 #endif
 
 #if (defined(GT_LINA_T1A_H5_PWM))

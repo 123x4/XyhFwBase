@@ -16,7 +16,11 @@
 #define DEBUG_VER  1139
 
 /********************************/
+#if defined(GT_LINA_T1A_H6_PWM)
+#define MYDEBUG_ENABLE          1
+#else
 #define MYDEBUG_ENABLE          0
+#endif
 #if MYDEBUG_ENABLE
 
 #define MYDEBUG_UART_PRINTF_MASK      (0x01 << 0)

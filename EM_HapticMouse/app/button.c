@@ -8,6 +8,12 @@
 #include "my_hallkey_func.h"
 #include "my_board.h"
 #include "my_adc.h"
+#if defined(GT_LINA_T1A_H6_PWM)
+#include "my_debug.h"
+#include "my_tick.h"
+#include "usbcore.h"
+#include "WWDT.h"
+#endif
 
 UINT8 hall_spi_tx[4] = {0};
 UINT8 hall_spi_rx[4] = {0};
@@ -951,9 +957,62 @@ void ana_hall2_phy_set_mode(unsigned char length)
 	}
 }
 
+#if defined(GT_LINA_T1A_H6_PWM)
+static void Hall_H6_Diagnostic(void)
+{
+    uint8_t tx[4] = {0};
+    uint8_t rx[4];
+    unsigned int word0;
+    unsigned int word1;
+    unsigned int attempts = 0;
+    uint8_t passed = 0;
+    uint32_t lastLog;
+
+    do
+    {
+        /* GTRY164 Fig. 9: td10 high, td12 low, then two 16-bit words. */
+        Hall_CLK_Command_SET(DELAY_OUT(128), DELAY_OUT(60));
+        SSP_Send_Receive(tx, rx, sizeof(tx));
+        word0 = ((unsigned int)rx[0] << 8) | rx[1];
+        word1 = ((unsigned int)rx[2] << 8) | rx[3];
+        ++attempts;
+        passed = rx[1] >= 0x7CU && rx[1] <= 0x84U &&
+                 rx[3] >= 0x7CU && rx[3] <= 0x84U;
+    } while (!passed && attempts < 128U);
+
+    if (passed)
+    {
+        TimerDelayMsec(20);
+    }
+
+    /* Keep USB logs running here until normal H6 initialization is added. */
+    lastLog = MyTick_GetTickMs() - 1000U;
+    while (1)
+    {
+        const uint32_t now = MyTick_GetTickMs();
+
+        wwdt_feed();
+        if (g_USBCore_Setting.USB_Configuration != 0U)
+        {
+            if (now - lastLog >= 1000U)
+            {
+                InfoLog("H6_CAL %s n=%u w0=0x%04X w1=0x%04X",
+                        passed ? "PASS" : "FAIL", attempts, word0, word1);
+                lastLog = now;
+            }
+            MyDebug_Task();
+        }
+    }
+}
+#endif
+
 void HallSensor_INIT(void)
 {
+#if defined(GT_LINA_T1A_H6_PWM)
+    Hall_H6_Diagnostic();
+#else
 	Hall_osc_calibrate();
 
 	ana_hall2_phy_set_mode(2);
+#endif
 }
